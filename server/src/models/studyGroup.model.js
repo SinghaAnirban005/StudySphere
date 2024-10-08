@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const GroupSchema = new mongoose.Schema({
     name: {
@@ -13,11 +13,12 @@ const GroupSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', 
     }],
-    resources: [{
-        type: String,
-        title: String,
-        url: String,
-    }],
+    resources: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Resource"
+        }
+    ],
     chatHistory: [{
         userId: {
             type: mongoose.Schema.Types.ObjectId,
