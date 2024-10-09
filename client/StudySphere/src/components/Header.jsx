@@ -7,7 +7,7 @@ import LogoutBtn from "./LogoutBtn.jsx"
 function Header() {
 
     const authStatus = useSelector((state) => state.status)
-    // const navigate =  useNavigate()
+    const navigate =  useNavigate()
 
     const navBar = [
         {
@@ -37,12 +37,12 @@ function Header() {
 
             <Logo />
 
-           <div className="flex items-center h-[50%] w-[10vw] justify-between">
+           <div className="flex items-center h-[50%] justify-between">
            {
                 navBar.map((item) => (
                     item.active &&
                     <ul className="flex h-[100%] w-[100%]">
-                        <li key={item.title} className="flex px-[2vw] items-center cursor-pointer rounded-md h-[100%]  text-white hover:bg-blue-800">
+                        <li key={item.title} className="flex px-[2vw] items-center cursor-pointer rounded-md h-[100%]  text-white hover:bg-blue-800" onClick={() => navigate(item.slug)}>
                             {item.title}
                         </li>
                     </ul>
@@ -50,7 +50,9 @@ function Header() {
             }
            </div>
 
-           <LogoutBtn />
+           {authStatus && (
+            <LogoutBtn />
+           )}
         </div>
     )
 }

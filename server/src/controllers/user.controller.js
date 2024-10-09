@@ -80,6 +80,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) =>{
 
+   try {
     const {email, password} = req.body
 
     if (!email) {
@@ -122,6 +123,10 @@ const loginUser = asyncHandler(async (req, res) =>{
             "User logged In Successfully"
         )
     )
+   } catch (error) {
+        console.log(error?.message)
+        throw new ApiError(500, error?.message)
+   }
 
 })
 
