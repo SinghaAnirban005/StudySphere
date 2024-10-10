@@ -17,16 +17,39 @@ function SignUp() {
     const navigate = useNavigate()
 
     const userData = useSelector((state) => state.userData)
+   
 
     const createAccount = async function(data) {
         try {   
-            const registration = await axios.post("http://localhost:8000/api/v1/users/register", data)
+            const formData = new FormData();
+            console.log(data.profilePic)
+           
+            formData.append('fullName', data.fullName);
+            formData.append('email', data.email);
+            formData.append('username', data.username);
+            formData.append('password', data.password);
+            formData.append('profilePic', data.profilePic[0]);
+
+            console.log(formData)
+            const registration = await axios.post("http://localhost:8000/api/v1/users/register", formData, {
+                withCredentials: true
+            });
 
             if(registration.status !== 201 && registration.status !== 200){
                 setError("Enter all fields")
             }
 
+            const newData = {
+                email: data.email,
+                password: data.password
+            }
+
+            await axios.post('http://localhost:8000/api/v1/users/signIn', newData, {
+                withCredentials: true
+            })
+
             dispatch(login(data))   
+
             console.log(userData)
             navigate('/')
             
@@ -36,15 +59,15 @@ function SignUp() {
     }
 
     return (
-        <div className="flex justify-center items-center bg-gradient-to-r from-amber-300 to-blue-950 w-[100%] h-[42vw]">
+        <div className="flex justify-center items-center bg-gradient-to-r from-amber-300 to-blue-950 w-[100%] min-h-[calc(100vh-5vw)]">
             
-            <div className="flex flex-col px-[2vw] w-[35%] shadow-xl shadow-slate-900 rounded-2xl h-[85%] items-center justify-center bg-slate-200">
+            <div className="flex flex-col px-[2vw] w-[35%] shadow-xl shadow-slate-900 rounded-2xl h-[70%] items-center justify-center bg-slate-200">
             <header className="flex justify-center h-[15%] w-[20%] mt-[2vw]">
                 <img src="https://th.bing.com/th/id/OIP.1bl2HLvxZV77Wiw35aUDlgHaHa?rs=1&pid=ImgDetMain" alt="logo" className="rounded-3xl" />
             </header>
 
             <div className="flex text-center">
-            Join thousands of learners and collaborate in real-time with study groups tailored to your needs.
+                Join thousands of learners and collaborate in real-time with study groups tailored to your needs.
             </div>
 
             {error && (
@@ -87,6 +110,18 @@ function SignUp() {
                     }
                 />
                 <Input
+                    label="Choose a Profile picture"
+                    type="file"
+                    accept="image/*"
+                    {
+                        ...register(
+                            "profilePic", {
+                                required: true
+                            }
+                        )
+                    }
+                />
+                <Input
                     placeholder= "Password (min 6 Characters)"
                     className=""
                     type="password"
@@ -103,7 +138,7 @@ function SignUp() {
                     By clicking on SignUp, you agree to StudySphere's <span className="font-bold text-sky-600 cursor-pointer hover:text-sky-500">terms and conditions</span>
                 </div>
 
-                <button type="submit" className="bg-black text-white w-[30%] h-[5vw] rounded-xl hover:bg-slate-900">
+                <button type="submit" className="bg-black text-white w-[30%] h-[3vw] rounded-xl hover:bg-slate-900">
                     Sign Up
                 </button>
             </form>

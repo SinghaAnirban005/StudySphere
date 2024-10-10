@@ -8,6 +8,7 @@ import { login } from "../store/Slice.js"
 import axios from "axios"
 
 function Login() {
+    
     const navigate = useNavigate()
     const [ loading, setLoading ] = useState(true)
     const [error, setError] = useState(null)
@@ -17,7 +18,9 @@ function Login() {
     const loginAccount = async function(data) {
         try {   
             console.log(data)
-            const loggedIn = await axios.post('http://localhost:8000/api/v1/users/signIn', data)
+            const loggedIn = await axios.post('http://localhost:8000/api/v1/users/signIn', data, {
+                withCredentials: true
+            })
             console.log("request has been made")
             if(loggedIn.status !== 201 && loggedIn.status !== 200){
                 setError("Enter all fields")
@@ -32,7 +35,7 @@ function Login() {
     }
 
     return (
-        <div className="flex justify-center items-center bg-gradient-to-r from-amber-300 to-blue-950 w-[100%] h-[42vw]">
+        <div className="flex justify-center items-center bg-gradient-to-r from-amber-300 to-blue-950 w-[100%] min-h-[calc(100vh-5vw)]">
             
         <div className="flex flex-col px-[2vw] w-[35%] shadow-xl shadow-slate-900 rounded-2xl h-[85%] items-center justify-center bg-slate-200">
         <header className="flex justify-center h-[15%] w-[20%] mt-[2vw]">
