@@ -10,21 +10,29 @@ import { User } from "../models/user.model.js";
 // check if user is a memeber of a group
 
 const createGroup = asyncHandler(async (req, res) => {
-    const { name, members } = req.body;
+    const { name, description } = req.body;
 
+    if(!name) {
+      throw new ApiError(400, "Please enter name of group")
+    }
+
+    if(!description) {
+      throw new ApiError(400, "Please enter description for group")
+    }
     const leaderId = req.user._id
 
-    if (!members.includes(leaderId)) {
-        members.push(leaderId);
-      }
+    // if (!members.includes(leaderId)) {
+    //     members.push(leaderId);
+    //   }
     
-  
     try {
       const newGroup = new Group({
         name,
-        leader: leaderId,
-        members, 
+        leader: leaderId, 
+        description
       });
+
+      newGroup.members.push(leaderId)
   
       await newGroup.save();
 
@@ -112,6 +120,5 @@ const createGroup = asyncHandler(async (req, res) => {
   export {
     createGroup,
     getMembers,
-    addResources,
     removeMemberFromGroup
   }

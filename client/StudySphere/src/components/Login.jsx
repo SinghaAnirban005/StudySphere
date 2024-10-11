@@ -17,7 +17,7 @@ function Login() {
 
     const loginAccount = async function(data) {
         try {   
-            console.log(data)
+      
             const loggedIn = await axios.post('http://localhost:8000/api/v1/users/signIn', data, {
                 withCredentials: true
             })
@@ -26,7 +26,12 @@ function Login() {
                 setError("Enter all fields")
             }
 
-            dispatch(login(data))
+            const userData = await axios.get('http://localhost:8000/api/v1/users/getUser', {
+                withCredentials: true
+            })
+            
+            dispatch(login(userData.data.data))   
+            console.log(userData.data.data)
 
             navigate('/')
         } catch (error) {

@@ -15,8 +15,6 @@ function SignUp() {
     const { register, handleSubmit } = useForm()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-
-    const userData = useSelector((state) => state.userData)
    
 
     const createAccount = async function(data) {
@@ -47,8 +45,12 @@ function SignUp() {
             await axios.post('http://localhost:8000/api/v1/users/signIn', newData, {
                 withCredentials: true
             })
+            
+            const userData = await axios.get('http://localhost:8000/api/v1/users/getUser', {
+                withCredentials: true
+            })
 
-            dispatch(login(data))   
+            dispatch(login(userData.data.data))   
 
             console.log(userData)
             navigate('/')
