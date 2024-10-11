@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     },
     profilePic: {
         type: String, 
-        default: 'default.jpg',
+        default: 'https://w0.peakpx.com/wallpaper/93/538/HD-wallpaper-cartoon-brown-bear-cartoon-brown-bear-png-cliparts-on-clipart-library-thumbnail.jpg',
     },
     bio: {
         type: String,

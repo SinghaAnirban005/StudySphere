@@ -33,7 +33,7 @@ function Header() {
     ]
 
     return (
-        <div className="w-[100%] flex justify-between items-center px-[2vw] bg-gradient-to-r from-blue-600 to-blue-950 h-[5vw]">
+        <div className="w-[100%] flex justify-between items-center px-[2vw] bg-gradient-to-r from-blue-600 to-blue-950 h-[5vw] bg-opacity-50 backdrop-filter backdrop-blur-md">
 
             <Logo />
 

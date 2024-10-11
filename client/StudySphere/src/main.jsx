@@ -7,7 +7,10 @@ import store from "./store/store.js"
 import Home from './components/Home.jsx'
 import SignUp from './components/SignUp.jsx'
 import Login from './components/Login.jsx'
+import MyGroups from './components/MyGroups.jsx'
+import JoinG from './components/JoinG.jsx'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+
 
 const router = createBrowserRouter(
   [
@@ -26,6 +29,14 @@ const router = createBrowserRouter(
         {
           path: '/login',
           element: <Login />
+        },
+        {
+          path: '/group',
+          element: <MyGroups />
+        },
+        {
+          path: '/joinGroups',
+          element: <JoinG />
         }
       ]
     }

@@ -19,6 +19,12 @@ const GroupSchema = new mongoose.Schema({
             ref: "Resource"
         }
     ],
+    description: {
+        type:  String,
+        required: true,
+        index: true,
+        trim: true
+    },
     chatHistory: [{
         userId: {
             type: mongoose.Schema.Types.ObjectId,
