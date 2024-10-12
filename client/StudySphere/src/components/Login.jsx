@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import Input from "./Input.jsx"
 import { useDispatch } from "react-redux"
+import { groups } from "../store/Slice.js"
 import { login } from "../store/Slice.js"
 import axios from "axios"
 
@@ -17,11 +18,11 @@ function Login() {
 
     const loginAccount = async function(data) {
         try {   
-      
+
             const loggedIn = await axios.post('http://localhost:8000/api/v1/users/signIn', data, {
                 withCredentials: true
             })
-            console.log("request has been made")
+            
             if(loggedIn.status !== 201 && loggedIn.status !== 200){
                 setError("Enter all fields")
             }
@@ -30,8 +31,8 @@ function Login() {
                 withCredentials: true
             })
             
-            dispatch(login(userData.data.data))   
-            console.log(userData.data.data)
+            dispatch(login(userData.data.data))
+            
 
             navigate('/')
         } catch (error) {

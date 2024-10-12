@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
@@ -9,6 +8,7 @@ import SignUp from './components/SignUp.jsx'
 import Login from './components/Login.jsx'
 import MyGroups from './components/MyGroups.jsx'
 import JoinG from './components/JoinG.jsx'
+import Group from './components/Group.jsx'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 
@@ -37,6 +37,10 @@ const router = createBrowserRouter(
         {
           path: '/joinGroups',
           element: <JoinG />
+        },
+        {
+          path: '/c/:groupId',
+          element: <Group />
         }
       ]
     }

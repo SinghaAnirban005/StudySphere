@@ -20,7 +20,6 @@ function SignUp() {
     const createAccount = async function(data) {
         try {   
             const formData = new FormData();
-            console.log(data.profilePic)
            
             formData.append('fullName', data.fullName);
             formData.append('email', data.email);
@@ -28,7 +27,6 @@ function SignUp() {
             formData.append('password', data.password);
             formData.append('profilePic', data.profilePic[0]);
 
-            console.log(formData)
             const registration = await axios.post("http://localhost:8000/api/v1/users/register", formData, {
                 withCredentials: true
             });
@@ -52,7 +50,6 @@ function SignUp() {
 
             dispatch(login(userData.data.data))   
 
-            console.log(userData)
             navigate('/')
             
         } catch (error) {
