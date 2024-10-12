@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Input from "./Input.jsx";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { ApiError } from "../../../../server/src/utils/ApiError.js";
+import { useDispatch } from "react-redux";
+import { groups } from "../store/Slice.js";
+import { useSelector } from "react-redux";
+import GroupCard from "./GroupCard.jsx";
 
 function MyGroups() {
 
     const [isOpen, setIsOpen] = useState(false)
     const { register, handleSubmit } = useForm()
+    const dispatch = useDispatch()
+    const data = useSelector((state) => state.userGroups)
 
     const openForm = () => {
         setIsOpen(true)
@@ -27,15 +34,43 @@ function MyGroups() {
                 throw new Error(400, "Failed to create group")
             }
 
+            // const gc = await axios.get('http://localhost:8000/api/v1/users/getGroups', {withCredentials: true})
+            
+            // if(!gc) {
+            //   throw new ApiError(400, "Groups have not been fetched")
+            // }
+          
+            // dispatch(groups(gc.data.data[0]))
+            
             alert('Study Group has been succesfully created ')
+            setIsOpen(false)
         } catch (error) {
             throw new Error(error?.message)
         }
     }
 
+    useEffect(() => {
+      const fetchGroups = async () => {
+        try {
+          const cadet = await axios.get(
+            "http://localhost:8000/api/v1/users/getGroups",
+            { withCredentials: true }
+          );
+          console.log(cadet.data.data)
+          dispatch(groups(cadet.data.data)); 
+        } catch (error) {
+          console.error("Error loading groups", error);
+        }
+      };
+  
+      fetchGroups();
+      // console.log("Printing data :" + data)
+    }, [])
+    
+
     return (
-        <div className="flex min-h-[calc(100vh-5vw)] bg-gradient-to-r from-slate-400 to-slate-800">
-            <button onClick={openForm} className="bg-blue-500 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-blue-600 h-[3vw] transition duration-300">
+        <div className="flex flex-col min-h-[calc(100vh-5vw)] items-center bg-gradient-to-r from-slate-400 to-slate-800">
+            <button onClick={openForm} className="bg-blue-500 max-w-[10vw] mt-[1vw] text-white py-3 px-6 rounded-lg shadow-lg hover:bg-blue-600 h-[3vw] transition duration-300">
                 Create
             </button>
 
@@ -92,6 +127,20 @@ function MyGroups() {
           </div>
         </div>
       )}
+
+      {
+        !isOpen && (
+          <ul className="flex flex-wrap justify-center max-w-[100%] px-[2vw] gap-[1vw] min-h-[40vw] mt-[1vw]">
+        {
+          data.map((card) => (
+            <li className="">
+              <GroupCard name={card.name} description={card.description} _id={card._id} />
+            </li>
+          ))
+        }
+      </ul>
+        )
+      }
 
         </div>
     )

@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     status : false,
-    userData: {}
+    userData: {},
+    userGroups: []
 }
 
 const slice = createSlice({
@@ -10,17 +11,30 @@ const slice = createSlice({
     initialState,
     reducers: {
         login: (state, action) => {
-            console.log(action.payload)
             state.status = true;
             state.userData = action.payload;
         },
         logout: (state) => {
             state.status = false;
             state.userData = {};
+            state.userGroups=[]
+        },
+        groups: (state, action) => {
+          
+            if(state.status == true){
+                state.userGroups = [...action.payload]
+            }
+
+            console.log(JSON.stringify(state.userGroups))
+        },
+        delGroup: (state, action) => {
+            if(state.status == true) {
+                console.log(action.payload[0])
+            }
         }
      }
 })
 
-export const { login, logout } = slice.actions;
+export const { login, logout, groups, delGroup } = slice.actions;
 
 export default slice.reducer;

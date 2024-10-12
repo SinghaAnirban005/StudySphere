@@ -1,11 +1,12 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js"
 import { User } from "../models/user.model.js";
+import { Group } from "../models/studyGroup.model.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 
 const generateAccessAndRefereshTokens = async(userId) =>{
@@ -334,6 +335,39 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
   }
 )
 
+const getGroups = asyncHandler(async(req, res) => {
+    try {
+        const userId = req.user._id;
+        console.log((userId))
+
+        if(!userId) {
+            throw new ApiError(400, "User does not exist")
+        }
+
+        const groups = await Group.find({
+            members: {
+                $in: [userId]
+            }
+        })
+
+        if(!groups){
+            throw new ApiError(400, "Failed to find groups")
+        }
+
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                groups,
+                "Succesfully found groups"
+            )
+        )
+    } catch (error) {   
+        throw new ApiError(500, error?.message)
+    }
+})
+
 export {
     registerUser,
     logoutUser,
@@ -342,5 +376,6 @@ export {
     getCurrentUser,
     updatefullName,
     updatePassword,
-    updateProfilePicture
+    updateProfilePicture,
+    getGroups
 }

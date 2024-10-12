@@ -9,7 +9,7 @@ function LogoutBtn() {
     const dispatch = useDispatch(); 
 
     const handleLogout = async () => {
-        console.log('clicked');
+    
         try {
             await axios.post('http://localhost:8000/api/v1/users/signOut', {}, { withCredentials: true });
             dispatch(logout());

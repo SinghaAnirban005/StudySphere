@@ -12,9 +12,9 @@ function Home() {
     const userData = useSelector((state) => state.userData)
     const navigate = useNavigate()
 
-    const handleClick = async () => {
-        console.log(userData)
-    }
+    // const handleClick = async () => {
+    //     console.log(userData)
+    // }
 
     return (
         userStatus ? (

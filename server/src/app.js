@@ -12,7 +12,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Handle preflight requests (OPTIONS) for all routes
 app.options('*', cors(corsOptions));
 
 app.use(express.json({limit: "16kb"}))
