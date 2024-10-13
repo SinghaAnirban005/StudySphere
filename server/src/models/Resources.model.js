@@ -14,6 +14,12 @@ const resourceSchema = new mongoose.Schema({
         index: true
     },
 
+    description: {
+        type: String,
+        required: true,
+        index: true
+    },
+
     sharedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
