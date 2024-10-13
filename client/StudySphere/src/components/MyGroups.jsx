@@ -52,12 +52,14 @@ function MyGroups() {
     useEffect(() => {
       const fetchGroups = async () => {
         try {
+          
           const cadet = await axios.get(
             "http://localhost:8000/api/v1/users/getGroups",
             { withCredentials: true }
           );
           console.log(cadet.data.data)
           dispatch(groups(cadet.data.data)); 
+
         } catch (error) {
           console.error("Error loading groups", error);
         }
@@ -134,7 +136,7 @@ function MyGroups() {
         {
           data.map((card) => (
             <li className="">
-              <GroupCard name={card.name} description={card.description} _id={card._id} />
+              <GroupCard name={card.name} description={card.description} _id={card._id} leader={card.leader} />
             </li>
           ))
         }

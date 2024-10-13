@@ -165,11 +165,115 @@ const createGroup = asyncHandler(async (req, res) => {
     }
   })
 
+  const addMember = asyncHandler(async(req, res) => {
+    try {
+      const {username, email} = req.body
+      const {groupId} = req.params
+      console.log(req.params)
+
+      if(!username || !email) {
+        throw new ApiError(400, "Enter all fields")
+      }
+
+      const existingUser = await User.findOne({
+        $or: [
+          { username: username },
+          { email: email }
+        ]
+      });
+
+      if(!existingUser) {
+        throw new ApiError(400, "User does not exist")
+      }
+
+      const updatedGroup = await Group.findByIdAndUpdate(
+          groupId,
+          {
+            $addToSet: {
+              members: existingUser._id
+            }
+          },
+
+          {
+            new: true
+          }
+      )
+
+      if(!updatedGroup) {
+        throw new ApiError(400, "Failed to update group")
+      }
+
+      const updateUser = await User.findByIdAndUpdate(
+        existingUser._id,
+        {
+          $addToSet:{
+            groups: updatedGroup._id
+          }
+        },
+        {
+          new: true
+        }
+      )
+
+      if(!updateUser) {
+        throw new ApiError(401, "Failed to update user")
+      }
+
+      return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          updatedGroup,
+          "Succesfully updated group"
+        )
+      )
+    } catch (error) {
+      throw new ApiError(500, error?.message)
+    }
+  })
+
+  const deleteGroup = asyncHandler(async(req, res) => {
+    try {
+      const { groupId } = req.params
+
+      const group = await Group.findByIdAndDelete(groupId)
+
+      if(!group) {
+        throw new ApiError(400, "Group not found !!")
+      }
+
+      const user = await User.updateMany(
+        { groups: groupId }, 
+        { 
+          $pull: 
+          { 
+            groups: groupId 
+          } 
+        } 
+      );
+
+      return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          user,
+          "Deleted group "
+        )
+      )
+    } catch (error) {
+      throw new ApiError(500, error?.message)
+    }
+  })
+
 
   export {
     createGroup,
     getMembers,
     removeMemberFromGroup,
     getGroups,
-    getGroupInfo
+    getGroupInfo,
+    addMember,
+    deleteGroup
   }

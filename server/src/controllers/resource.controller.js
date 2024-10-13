@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Group } from "../models/studyGroup.model.js";
 import { Resource } from "../models/Resources.model.js";
 import { User } from "../models/user.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js"
 
 
 const addResource = asyncHandler(async(req, res) => {
@@ -12,7 +13,25 @@ const addResource = asyncHandler(async(req, res) => {
         
         const userId = req.user._id
 
-        const { title, url } = req.body
+        const { title,  description } = req.body
+
+
+        if(!title || !description) {
+            throw new ApiError(400, "Enter all fields")
+        }
+        
+        const resourcePath = req.file?.path
+        console.log(req.file)
+        
+        if(!resourcePath) {
+            throw new ApiError(400, "Failed to get resource !!")
+        }
+
+        const uploadedResource = await uploadOnCloudinary(resourcePath)
+        
+        if(!uploadedResource) {
+            throw new ApiError(400, "Failed to upload resource ")
+        }
 
         const group = await Group.findById(groupId)
         if(!group) {
@@ -25,16 +44,11 @@ const addResource = asyncHandler(async(req, res) => {
             throw new ApiError(400, "Adding resource is prohibited !!")
         }
 
-        // const user = await User.findById(userId).select('-password -refreshToken')
-
-        // if(!user) {
-        //     throw new ApiError(400, "User doesn't exist !!")
-        // }
-
         const newResource = await Resource.create(
             {
                 title: title,
-                url: url,
+                url: uploadedResource.url,
+                description: description,
                 sharedBy: userId
             }
         )
@@ -42,6 +56,7 @@ const addResource = asyncHandler(async(req, res) => {
         if(!newResource) {
             throw new ApiError(400, "Reource does not exist")
         }
+        
         group.resources.push(newResource._id)
 
         await group.save()
@@ -51,7 +66,7 @@ const addResource = asyncHandler(async(req, res) => {
         .json(
             new ApiResponse(
                 200, 
-                group,
+                newResource,
                 "Updated group with resources"
             )
         )
@@ -61,6 +76,31 @@ const addResource = asyncHandler(async(req, res) => {
     }
 })
 
+const getResources = asyncHandler(async(req, res) => {
+    try {
+        const { groupId } = req.params
+
+        const group = await Group.findById(groupId).populate('resources', 'title url description')
+
+        if(!group) {
+            throw new ApiError(400, "Failed to find group")
+        }
+        
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                group.resources,
+                "Fetched group's resources"    
+            )
+        )
+    } catch (error) {
+        throw new ApiError(500, error?.message)
+    }
+})
+
 export {
-    addResource
+    addResource,
+    getResources
 }

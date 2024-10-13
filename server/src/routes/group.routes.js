@@ -4,8 +4,9 @@ import {
     // addResources,
     removeMemberFromGroup,
     getGroups,
-    getGroupInfo
-
+    getGroupInfo,
+    addMember,
+    deleteGroup
 } from '../controllers/group.controller.js'
 
 import { verifyJWT } from '../middlewares/auth.middleware.js'
@@ -15,9 +16,10 @@ const router = Router()
 
 router.route('/createGroup').post(verifyJWT, createGroup)
 router.route('/getMembers').get(verifyJWT, getMembers)
-// router.route('/addResource').post(verifyJWT, addResources)
 router.route('/getG').get(getGroups)
 router.route('/c/:groupId').get(verifyJWT, getGroupInfo)
 router.route('/remove').delete(verifyJWT, removeMemberFromGroup)
+router.route('/add/:groupId').post(verifyJWT, addMember)
+router.route('/delete/:groupId').delete(verifyJWT, deleteGroup)
 
 export default router
