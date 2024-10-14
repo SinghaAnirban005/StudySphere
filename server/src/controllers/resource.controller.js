@@ -3,7 +3,6 @@ import {ApiError} from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Group } from "../models/studyGroup.model.js";
 import { Resource } from "../models/Resources.model.js";
-import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 
 
@@ -80,7 +79,7 @@ const getResources = asyncHandler(async(req, res) => {
     try {
         const { groupId } = req.params
 
-        const group = await Group.findById(groupId).populate('resources', 'title url description')
+        const group = await Group.findById(groupId).populate('resources', 'title url description _id')
 
         if(!group) {
             throw new ApiError(400, "Failed to find group")
@@ -100,7 +99,44 @@ const getResources = asyncHandler(async(req, res) => {
     }
 })
 
+const deleteResources = asyncHandler(async(req, res) => {
+    try {
+        const {resourceId} = req.body
+
+        const resource = await Resource.findByIdAndDelete(resourceId)
+
+        if(!resource){
+            throw new ApiError(400, "Resource does not exist")
+        }
+
+        const group = await Group.updateMany(
+           { 
+            resources: resourceId
+           },
+           {
+            $pull:{
+                resources: resourceId
+            }
+           }
+
+        )
+
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                resource,
+                "Fetched resources"
+            )
+        )
+    } catch (error) {
+        throw new ApiError(500, error?.message)
+    }
+})
+
 export {
     addResource,
-    getResources
+    getResources,
+    deleteResources
 }

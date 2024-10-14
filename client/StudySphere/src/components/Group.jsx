@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Resources from "./Resources.jsx";
 
+
 function Group() {
 
     const [groupData, setGroupData] = useState({})
@@ -47,6 +48,7 @@ function Group() {
          
             const memberData = await axios.get(`http://localhost:8000/api/v1/group/c/${newId}`, {withCredentials: true})
             const resourceData = await axios.get(`http://localhost:8000/api/v1/resource/getResource/${newId}`, {withCredentials: true})
+            
             if(!memberData) {
                 throw new Error('No member data')
             }
@@ -127,7 +129,7 @@ function Group() {
     return (
         <div className="flex justify-around min-h-[calc(100vh-5vw)] bg-gradient-to-r from-slate-400 to-slate-800">
             <div className="bg-white w-[50%] rounded-xl">
-                Chat section
+               df
             </div>
 
             {isOpen && (
@@ -281,10 +283,11 @@ function Group() {
                             {
                                 resources.map((res) => (
                                     <li className="w-[70%]">
-                                        <Resources title={res.title} description={res.description} url={res.url}  />
+                                        <Resources title={res.title} description={res.description} url={res.url} _id={res._id} groupId={userId.groupId} />
                                     </li>
                                 ))
                             }
+                            
                         </ul>
                     )
                 }
