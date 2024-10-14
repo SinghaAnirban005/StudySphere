@@ -7,7 +7,7 @@ import Input from "./Input.jsx";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Resources from "./Resources.jsx";
-
+import ChatComponent from "./Chat.jsx";
 
 function Group() {
 
@@ -21,6 +21,8 @@ function Group() {
 
     const [members, setMembers] = useState([])
     const [resources, setResources] = useState([])
+    const [userID, setUserID] = useState('')
+    const [username, setUsername] = useState('')
 
     const userId = useParams()
     const navigate = useNavigate()
@@ -48,13 +50,21 @@ function Group() {
          
             const memberData = await axios.get(`http://localhost:8000/api/v1/group/c/${newId}`, {withCredentials: true})
             const resourceData = await axios.get(`http://localhost:8000/api/v1/resource/getResource/${newId}`, {withCredentials: true})
-            
+            const userData = await axios.get('http://localhost:8000/api/v1/users/getUser', {withCredentials: true}) 
+
             if(!memberData) {
                 throw new Error('No member data')
             }
 
+            console.log(memberData)
+
+            if(!userData) {
+                throw new  Error("No user data")
+            }
+
+            setUserID(userData.data.data._id)
+            setUsername(userData.data.data.username)
             setMembers(memberData.data.data.member)
-          
             setResources(resourceData.data.data)
         }
 
@@ -129,7 +139,7 @@ function Group() {
     return (
         <div className="flex justify-around min-h-[calc(100vh-5vw)] bg-gradient-to-r from-slate-400 to-slate-800">
             <div className="bg-white w-[50%] rounded-xl">
-               df
+                <ChatComponent groupId={userId.groupId} userId={userID} username={username} /> 
             </div>
 
             {isOpen && (

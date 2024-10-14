@@ -1,12 +1,15 @@
-import express from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
-import http from "http"
-import { Server } from "socket.io"
-import Message from "./models/Message.model.js"
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import { createServer } from "http";  
+import { Server } from "socket.io"; 
+import mongoose from "mongoose";
 
+import Message from "./models/Message.model.js";
 
-const app = express()
+const app = express();
+
+// CORS configuration
 const corsOptions = {
     origin: 'http://localhost:5173',  
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -15,63 +18,97 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.options('*', cors(corsOptions));
 
-app.use(express.json({limit: "16kb"}))
-app.use(express.urlencoded({extended: true, limit: "16kb"}))
-app.use(express.static("public"))
-app.use(cookieParser())
 
-const server = http.createServer(app)
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.static("public"));
+app.use(cookieParser());
+
+// Routers
+import userRouter from "./routes/user.routes.js";
+import groupRouter from "./routes/group.routes.js";
+import resourceRouter from "./routes/resource.routes.js";
+import chatRouter from "./routes/chat.routes.js";
+
+app.use("/api/v1/users", userRouter);
+app.use('/api/v1/group', groupRouter);
+app.use('/api/v1/resource', resourceRouter);
+app.use('/api/v1/chat', chatRouter);
+
+// Create the HTTP server and integrate Socket.io
+const server = createServer(app);
+
+// Initialize Socket.io instance
 const io = new Server(server, {
-    cors: {
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST'],
-        credentialsc: true
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  }
+});
+
+// Handle Socket.io connections for group chats
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
+  // Join group chat room
+  socket.on("join_group", async (groupId) => {
+    socket.join(groupId);
+    console.log(`User ${socket.id} joined group: ${groupId}`);
+  
+    // Fetch chat history from the database
+    try {
+      const messages = await Message.find({ groupId }).sort({ timestamp: 1 });
+      // Emit the chat history to the user who just joined
+      socket.emit('chat_history', messages);
+    } catch (err) {
+      console.error('Failed to load chat history:', err);
     }
+  });
+
+  // Handle incoming chat messages
+  socket.on("send_message", async (data) => {
+    const { groupId, message, userId, username } = data;
+
+    // Save the message to MongoDB
+    const newMessage = new Message({
+      groupId,
+      userId,
+      username,
+      message,
+      timestamp: new Date()
+    });
+
+    try {
+      await newMessage.save();  // Save the message to the database
+
+      // Emit the message to other users in the group
+      io.to(groupId).emit("receive_message", {
+        message,
+        userId,
+        username,
+        timestamp: newMessage.timestamp  // Use the saved timestamp
+      });
+
+      console.log(`Message sent to group ${groupId} by user ${username}: ${message}`);
+    } catch (err) {
+      console.error('Error saving message:', err);
+    }
+  });
+
+  // Handle when a user leaves the group
+  socket.on("leave_group", (groupId) => {
+    socket.leave(groupId);
+    console.log(`User ${socket.id} left group: ${groupId}`);
+  });
+
+  // Handle user disconnection
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${socket.id}`);
+  });
 });
 
-io.on('connection', (socket) => {
-    console.log('User connected:', socket.id);
-
-    // Listen for "send_message" event
-    socket.on('send_message', async ({ groupId, senderId, content }) => {
-        try {
-            // Create a new message in the database
-            const newMessage = await Message.create({
-                sender: senderId,
-                groupId,
-                content
-            });
-
-            // Emit the message to everyone in the group
-            io.to(groupId).emit('receive_message', newMessage);
-        } catch (error) {
-            console.error("Error storing message:", error);
-        }
-    });
-
-    // Join the user to a group room
-    socket.on('join_group', (groupId) => {
-        socket.join(groupId);
-        console.log(`User ${socket.id} joined group ${groupId}`);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
-    });
-});
-
-import userRouter from "./routes/user.routes.js"
-import groupRouter from "./routes/group.routes.js"
-import resourceRouter from "./routes/resource.routes.js"
-import chatRouter from "./routes/chat.routes.js"
-
-app.use("/api/v1/users", userRouter)
-app.use('/api/v1/group', groupRouter)
-app.use('/api/v1/resource', resourceRouter)
-app.use('/api/v1/chat', chatRouter)
-
-
-export {app, server, io}
+// Export both the Express app and the server (for Socket.io)
+export { app, server };
