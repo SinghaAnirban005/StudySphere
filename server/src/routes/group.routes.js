@@ -12,6 +12,7 @@ import {
 import { verifyJWT } from '../middlewares/auth.middleware.js'
 import { Router } from 'express'
 
+
 const router = Router()
 
 router.route('/createGroup').post(verifyJWT, createGroup)
