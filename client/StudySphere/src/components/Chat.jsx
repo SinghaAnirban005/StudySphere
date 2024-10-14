@@ -1,137 +1,88 @@
-// import React, { useState, useEffect } from "react";
-// import { io } from "socket.io-client";
-// import { useParams } from "react-router-dom";
-// import axios from "axios"
+import React, { useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
+import moment from 'moment'; // To handle timestamp formatting
 
-// const socket = io('http://localhost:8000');  // Replace with your server URL if hosted elsewhere
+const socket = io('http://localhost:8000'); // Connect to the server
 
-// function Chat() {
-//   const { groupId } = useParams(); // Extract groupId from URL params
-//   const [message, setMessage] = useState("");
-//   const [messages, setMessages] = useState([]);
+function ChatComponent({ groupId, userId, username }) {
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
 
-//   // Connect to the chat room when the component mounts
-//   useEffect(() => {
-//     // Fetch messages when the component mounts or groupId changes
-//     const fetchMessages = async () => {
-//       try {
-//         const response = await axios.get(`http://localhost:8000/api/v1/chat/${groupId}`, { withCredentials: true });
-//         setMessages(response.data.data);
-//       } catch (error) {
-//         console.error('Failed to load messages:', error);
-//       }
-//     };
-  
-//     // Call the fetch function to load previous messages
-//     fetchMessages();
-  
-//     // Join the socket group based on groupId
-//     const joinGroup = () => {
-//       if (groupId && socket.connected) {
-//         socket.emit('join_group', groupId);
-//       }
-//     };
-  
-//     // Call joinGroup function initially
-//     joinGroup();
-  
-//     // If socket isn't connected yet, join the group when the connection is established
-//     socket.on('connect', () => {
-//       joinGroup();
-//     });
-  
-//     // Listen for incoming messages
-//     const handleNewMessage = (newMessage) => {
-//       setMessages((prevMessages) => [...prevMessages, newMessage]);
-//     };
-//     socket.on('receive_message', handleNewMessage);
-  
-//     // Handle disconnection and reconnection scenarios
-//     socket.on('disconnect', () => {
-//       console.warn('Socket disconnected. Attempting to reconnect...');
-//     });
-  
-//     socket.on('reconnect', () => {
-//       console.log('Socket reconnected. Rejoining the group...');
-//       joinGroup(); // Rejoin the group after reconnection
-//     });
-  
-//     // Cleanup function to run when the component unmounts
-//     return () => {
-//       // Leave the group if component unmounts or groupId changes
-//       if (groupId) {
-//         socket.emit('leave_group', groupId);
-//       }
-  
-//       // Remove event listeners to avoid memory leaks
-//       socket.off('receive_message', handleNewMessage);
-//       socket.off('connect');
-//       socket.off('disconnect');
-//       socket.off('reconnect');
-//     };
-//   }, [groupId]);
-  
-  
+  useEffect(() => {
+    socket.emit('join_group', groupId);
 
-//   // Handle sending messages
-//   const sendMessage = () => {
-//     if (message.trim() !== "") {
-//       const messageData = {
-//         groupId,
-//         senderId: "your-user-id", // Replace with actual sender ID from your auth system
-//         content: message,
-//       };
+    socket.on('chat_history', (history) => {
+      setMessages(history);
+    });
 
-//       // Emit the message to the server
-//       socket.emit("send_message", messageData);
+    socket.on('receive_message', (data) => {
+      console.log(data)
+      setMessages((prev) => [...prev, data]);
+    });
 
-//       // Add the message to the local state
-//       setMessages((prevMessages) => [
-//         ...prevMessages,
-//         { content: message, self: true }
-//       ]);
+    return () => {
+      socket.emit('leave_group', groupId);
+      socket.off('chat_history');
+      socket.off('receive_message');
+    };
+  }, [groupId]);
 
-//       // Clear the input field
-//       setMessage("");
-//     }
-//   };
+  const sendMessage = () => {
+    if (message.trim()) {
+      socket.emit('send_message', { groupId, message, userId, username });
+      setMessage('');
+    }
+  };
 
-//   return (
-//     <div className="flex flex-col h-full p-4">
-//       {/* Message Display Area */}
-//       <div className="flex-grow overflow-y-auto bg-gray-100 p-4 rounded-lg">
-//         {messages.map((msg, index) => (
-//           <div
-//             key={index}
-//             className={`p-2 my-1 rounded-md ${
-//               msg.self
-//                 ? "bg-blue-500 text-white text-right"
-//                 : "bg-gray-300 text-black text-left"
-//             }`}
-//           >
-//             {msg.content}
-//           </div>
-//         ))}
-//       </div>
+  return (
+    <div className="flex flex-col h-full max-h-screen p-4">
+      {/* Messages Container */}
+      <div className="flex-grow overflow-y-auto bg-gray-100 p-4 rounded-lg space-y-3">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`flex ${
+              msg.userId === userId ? 'justify-end' : 'justify-start'
+            }`}
+          >
+            {/* Display messages differently for self vs others */}
+            <div
+              className={`p-3 max-w-xs rounded-lg shadow ${
+                msg.userId === userId
+                  ? 'bg-blue-500 text-white self-end'
+                  : 'bg-gray-300 text-black self-start'
+              }`}
+            >
+              <p className="font-medium">
+                {msg.userId !== userId && <span>{msg.username}</span>} {/* Display sender ID */}
+              </p>
+              <p>{msg.message}</p>
+              <p className="text-xs text-gray-200 mt-2 text-right">
+                {moment(msg.timestamp).format('h:mm A')}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
 
-//       {/* Message Input Field */}
-//       <div className="flex mt-4">
-//         <input
-//           type="text"
-//           value={message}
-//           onChange={(e) => setMessage(e.target.value)}
-//           className="flex-grow p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-//           placeholder="Type your message..."
-//         />
-//         <button
-//           onClick={sendMessage}
-//           className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 transition duration-300"
-//         >
-//           Send
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
+      {/* Input and Send Button */}
+      <div className="flex mt-4">
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="flex-grow p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Type your message..."
+        />
+        <button
+          onClick={sendMessage}
+          className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 transition duration-300"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
 
-// export default Chat;
+export default ChatComponent;
