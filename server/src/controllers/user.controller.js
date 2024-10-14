@@ -368,6 +368,34 @@ const getGroups = asyncHandler(async(req, res) => {
     }
 })
 
+const getLeader = asyncHandler(async(req, res) => {
+    try {
+        const {leader} = req.query 
+        console.log(req.query)
+        if(!leader) {
+            throw new ApiError(400, "Leader not found")
+        }
+
+        const leaderInfo = await User.findById(leader).select('-password -refreshToken')
+
+        if(!leaderInfo){
+            throw new ApiError(400, "Leader not found")
+        }
+
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                leaderInfo,
+                "Fetched leader info"
+            )
+        )
+    } catch (error) {
+        throw new ApiError(500, error?.message)
+    }
+})
+
 export {
     registerUser,
     logoutUser,
@@ -377,5 +405,6 @@ export {
     updatefullName,
     updatePassword,
     updateProfilePicture,
-    getGroups
+    getGroups,
+    getLeader
 }

@@ -15,6 +15,7 @@ function MyGroups() {
     const { register, handleSubmit } = useForm()
     const dispatch = useDispatch()
     const data = useSelector((state) => state.userGroups)
+    const [leaderName, setLeaderName] = useState('')
 
     const openForm = () => {
         setIsOpen(true)
@@ -58,6 +59,19 @@ function MyGroups() {
             { withCredentials: true }
           );
           console.log(cadet.data.data)
+          const leaderData = await axios.get('http://localhost:8000/api/v1/users/getLeader', {
+            params: {
+              leader: cadet.data.data[0].leader
+            },
+            withCredentials: true
+          });
+
+          if(!leaderData){
+            throw new ApiError(400, "Failed to get leader data")
+          }
+
+          setLeaderName(leaderData.data.data.fullName)
+      
           dispatch(groups(cadet.data.data)); 
 
         } catch (error) {
@@ -136,7 +150,7 @@ function MyGroups() {
         {
           data.map((card) => (
             <li className="">
-              <GroupCard name={card.name} description={card.description} _id={card._id} leader={card.leader} />
+              <GroupCard name={card.name} description={card.description} _id={card._id} leader={leaderName} />
             </li>
           ))
         }
