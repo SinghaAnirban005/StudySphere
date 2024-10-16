@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 
-function GroupCard({name, description, _id, leader}) {
+function GroupCard({name, description, _id, leader }) {
 
     const navigate = useNavigate()
 

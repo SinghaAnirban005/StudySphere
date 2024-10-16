@@ -1,12 +1,15 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Input from "./Input";
-import GroupCard from "./GroupCard.jsx";
+import GroupCard2 from "./GroupCard2.jsx";
 import axios from "axios";
 
 function JoinG() {
 
     const [groups, setGroups] = useState([])
+    const [leader, setLeader] = useState('')
+    const [id, setId] = useState('')
+
     useEffect(() => {
         const fetchGroups = async () => {
           try {
@@ -15,6 +18,26 @@ function JoinG() {
             if (!item) {
               throw new Error("Failed to fetch groups");
             }
+            
+            // const cadet = await axios.get(
+            //   "http://localhost:8000/api/v1/users/getGroups",
+            //   { withCredentials: true }
+            // );
+
+            // setId(cadet.data.data[0]._id)
+
+            // const leaderData = await axios.get('http://localhost:8000/api/v1/users/getLeader', {
+            //   params: {
+            //     leader: cadet.data.data[0].leader
+            //   },
+            //   withCredentials: true
+            // });
+
+            // if(!leaderData){
+            //   throw new ApiError(400, "Failed to get leader data")
+            // }
+
+            // setLeader(leaderData.data.data.fullName)
       
             setGroups(item.data.data)
           } catch (error) {
@@ -40,7 +63,7 @@ function JoinG() {
                 {
                 groups.map((card) => (
                     <li className="">
-                    <GroupCard name={card.name} description={card.description} />
+                    <GroupCard2 name={card.name} description={card.description} leader={leader} id={card._id} />
                     </li>
                 ))
                 }
