@@ -53,14 +53,14 @@ function JoinG() {
       <div className="flex flex-col min-h-[calc(100vh-5vw)] items-center bg-gradient-to-r from-slate-400 to-slate-800">
       <div className="relative flex justify-center items-center gap-[1vw] mt-[2vw]">
         <div className="relative">
-          {/* Search Input with a moving shine effect */}
+          
           <Input
             className="shine-effect h-[3vw] w-[25vw] pl-[1vw] pr-[4vw] text-black rounded-full focus:outline-none shadow-lg"
             value={item}
             onChange={(e) => setItem(e.target.value)}
             placeholder="Search for groups"
           />
-          {/* Moving shine effect */}
+   
           <div className="shine-glow"></div>
         </div>
         <button
