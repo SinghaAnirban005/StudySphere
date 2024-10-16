@@ -33,27 +33,42 @@ function Header() {
     ]
 
     return (
-        <div className="w-[100%] flex justify-between items-center px-[2vw] bg-gradient-to-r from-blue-600 to-blue-950 h-[5vw] bg-opacity-50 backdrop-filter backdrop-blur-md">
+        <div className="w-full flex justify-between items-center px-[2vw] h-[5vw] bg-gradient-to-r from-blue-600 to-blue-950 animate-gradient-x bg-opacity-80 backdrop-filter backdrop-blur-md shadow-lg border-b border-opacity-30 border-gray-200">
+  {/* Animated Background */}
+  <style>
+    {`
+    @keyframes gradient-x {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .animate-gradient-x {
+      background-size: 200% 200%;
+      animation: gradient-x 5s ease infinite;
+    }
+    `}
+  </style>
 
-            <Logo />
+  <Logo />
 
-           <div className="flex items-center h-[50%] justify-between">
-           {
-                navBar.map((item) => (
-                    item.active &&
-                    <ul className="flex h-[100%] w-[100%]">
-                        <li key={item.title} className="flex px-[2vw] items-center cursor-pointer rounded-md h-[100%]  text-white hover:bg-blue-800" onClick={() => navigate(item.slug)}>
-                            {item.title}
-                        </li>
-                    </ul>
-                ))
-            }
-           </div>
+  <div className="flex items-center h-full space-x-6">
+    {navBar.map((item) => (
+      item.active && (
+        <ul key={item.title} className="flex h-full">
+          <li 
+            className="w-[8vw] justify-center py-[0.5vw] flex items-center cursor-pointer rounded-md h-full text-white font-semibold text-lg transition-all duration-300 ease-in-out transform hover:bg-blue-800 hover:scale-110 hover:shadow-lg"
+            onClick={() => navigate(item.slug)}
+          >
+            {item.title}
+          </li>
+        </ul>
+      )
+    ))}
+  </div>
 
-           {authStatus && (
-            <LogoutBtn />
-           )}
-        </div>
+  {authStatus && <LogoutBtn />}
+</div>
+
     )
 }
 

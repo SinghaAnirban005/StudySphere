@@ -348,7 +348,7 @@ const getGroups = asyncHandler(async(req, res) => {
             members: {
                 $in: [userId]
             }
-        })
+        }).populate('leader','fullName')
 
         if(!groups){
             throw new ApiError(400, "Failed to find groups")
@@ -368,18 +368,46 @@ const getGroups = asyncHandler(async(req, res) => {
     }
 })
 
-const getLeader = asyncHandler(async(req, res) => {
+// const getLeader = asyncHandler(async(req, res) => {
+//     try {
+//         const {leader} = req.query 
+//         console.log(req.query)
+//         if(!leader) {
+//             throw new ApiError(400, "Leader not found")
+//         }
+
+//         const leaderInfo = await User.findById(leader).select('-password -refreshToken')
+
+//         if(!leaderInfo){
+//             throw new ApiError(400, "Leader not found")
+//         }
+
+//         return res
+//         .status(200)
+//         .json(
+//             new ApiResponse(
+//                 200,
+//                 leaderInfo,
+//                 "Fetched leader info"
+//             )
+//         )
+//     } catch (error) {
+//         throw new ApiError(500, error?.message)
+//     }
+// })
+
+const getLeaderInfo = asyncHandler(async(req, res) => {
     try {
-        const {leader} = req.query 
-        console.log(req.query)
-        if(!leader) {
-            throw new ApiError(400, "Leader not found")
+        const {leaderId} = req.body
+
+        if(!leaderId) {
+            throw new ApiError(400, "No ID available")
         }
 
-        const leaderInfo = await User.findById(leader).select('-password -refreshToken')
+        const leader = await User.findById(leaderId).select('-password -refreshToken')
 
-        if(!leaderInfo){
-            throw new ApiError(400, "Leader not found")
+        if(!leader) {
+            throw new ApiError(400, "No leader available")
         }
 
         return res
@@ -387,12 +415,12 @@ const getLeader = asyncHandler(async(req, res) => {
         .json(
             new ApiResponse(
                 200,
-                leaderInfo,
-                "Fetched leader info"
+                leader,
+                "Succesfully sent data of leader "
             )
         )
     } catch (error) {
-        throw new ApiError(500, error?.message)
+        throw new ApiError(500, "Server error :: " + error?.message)
     }
 })
 
@@ -406,5 +434,5 @@ export {
     updatePassword,
     updateProfilePicture,
     getGroups,
-    getLeader
+    getLeaderInfo
 }

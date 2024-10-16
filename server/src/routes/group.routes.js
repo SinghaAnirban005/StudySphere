@@ -6,7 +6,8 @@ import {
     getGroups,
     getGroupInfo,
     addMember,
-    deleteGroup
+    deleteGroup,
+    filterGroups
 } from '../controllers/group.controller.js'
 
 import { verifyJWT } from '../middlewares/auth.middleware.js'
@@ -22,5 +23,6 @@ router.route('/c/:groupId').get(verifyJWT, getGroupInfo)
 router.route('/remove').delete(verifyJWT, removeMemberFromGroup)
 router.route('/add/:groupId').post(verifyJWT, addMember)
 router.route('/delete/:groupId').delete(verifyJWT, deleteGroup)
+router.route('/filterGroups').get(verifyJWT, filterGroups)
 
 export default router

@@ -14,7 +14,8 @@ function MyGroups() {
     const [isOpen, setIsOpen] = useState(false)
     const { register, handleSubmit } = useForm()
     const dispatch = useDispatch()
-    const data = useSelector((state) => state.userGroups)
+    const [leaders, setLeaders] = useState([])
+    const [data, setData] = useState([])
     const [leaderName, setLeaderName] = useState('')
 
     const openForm = () => {
@@ -35,14 +36,7 @@ function MyGroups() {
                 throw new Error(400, "Failed to create group")
             }
 
-            // const gc = await axios.get('http://localhost:8000/api/v1/users/getGroups', {withCredentials: true})
-            
-            // if(!gc) {
-            //   throw new ApiError(400, "Groups have not been fetched")
-            // }
-          
-            // dispatch(groups(gc.data.data[0]))
-            
+           
             alert('Study Group has been succesfully created ')
             setIsOpen(false)
         } catch (error) {
@@ -57,22 +51,9 @@ function MyGroups() {
           const cadet = await axios.get(
             "http://localhost:8000/api/v1/users/getGroups",
             { withCredentials: true }
-          );
-          
-          const leaderData = await axios.get('http://localhost:8000/api/v1/users/getLeader', {
-            params: {
-              leader: cadet.data.data[0].leader
-            },
-            withCredentials: true
-          });
+          );        
 
-          if(!leaderData){
-            throw new ApiError(400, "Failed to get leader data")
-          }
-
-          setLeaderName(leaderData.data.data.fullName)
-      
-          dispatch(groups(cadet.data.data)); 
+          setData(cadet.data.data);
 
         } catch (error) {
           console.error("Error loading groups", error);
@@ -80,7 +61,7 @@ function MyGroups() {
       };
   
       fetchGroups();
-      // console.log("Printing data :" + data)
+    
     }, [])
     
 
@@ -148,9 +129,9 @@ function MyGroups() {
         !isOpen && (
           <ul className="flex flex-wrap justify-center max-w-[100%] px-[2vw] gap-[1vw] min-h-[40vw] mt-[1vw]">
         {
-          data.map((card) => (
-            <li className="">
-              <GroupCard name={card.name} description={card.description} _id={card._id} leader={leaderName} />
+          data.map((card, index) => (
+            <li className="" key={index}>
+              <GroupCard name={card.name} description={card.description} _id={card._id} leader={card.leader.fullName} />
             </li>
           ))
         }

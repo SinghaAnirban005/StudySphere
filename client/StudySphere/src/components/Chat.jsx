@@ -36,7 +36,7 @@ function ChatComponent({ groupId, userId, username }) {
 
   return (
     <div className="flex flex-col h-full max-h-screen p-4">
-      {/* Messages Container */}
+   
       <div className="flex-grow overflow-y-auto bg-gray-100 p-4 rounded-lg space-y-3">
         {messages.map((msg, index) => (
           <div
@@ -45,7 +45,7 @@ function ChatComponent({ groupId, userId, username }) {
               msg.userId === userId ? 'justify-end' : 'justify-start'
             }`}
           >
-            {/* Display messages differently for self vs others */}
+
             <div
               className={`p-3 max-w-xs rounded-lg shadow ${
                 msg.userId === userId
@@ -54,7 +54,7 @@ function ChatComponent({ groupId, userId, username }) {
               }`}
             >
               <p className="font-medium">
-                {msg.userId !== userId && <span>{msg.username}</span>} {/* Display sender ID */}
+                {msg.userId !== userId && <span>{msg.username}</span>}
               </p>
               <p>{msg.message}</p>
               <p className="text-xs text-gray-200 mt-2 text-right">
