@@ -111,7 +111,7 @@ const createGroup = asyncHandler(async (req, res) => {
 
   const getGroups = asyncHandler(async(req, res) => {
     try {
-      const groups = await Group.find({})
+      const groups = await Group.find({}).populate('leader', 'fullName')
 
       if(!groups) {
         throw new ApiError(400, "No groups available")
@@ -266,6 +266,39 @@ const createGroup = asyncHandler(async (req, res) => {
     }
   })
 
+  const filterGroups = asyncHandler(async(req, res) => {
+    try {
+        const {name} = req.query
+
+        let condition = {}
+
+        if(name.trim() !== '') {
+          condition.name = {
+            $regex: name,
+            $options: "i"
+          }
+        }
+
+        const filteredGroup = await Group.find(condition).populate('leader', 'fullName')
+
+        if(!filteredGroup) {
+          throw new ApiError(400, "Groups not found")
+        }
+
+        return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            filteredGroup,
+            "Filtered Groups"
+          )
+        )
+    } catch (error) {
+      throw new ApiError(500, "Server error" + error?.message)
+    }
+  })
+
 
   export {
     createGroup,
@@ -274,5 +307,6 @@ const createGroup = asyncHandler(async (req, res) => {
     getGroups,
     getGroupInfo,
     addMember,
-    deleteGroup
+    deleteGroup,
+    filterGroups
   }

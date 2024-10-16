@@ -7,8 +7,29 @@ import axios from "axios";
 function JoinG() {
 
     const [groups, setGroups] = useState([])
-    const [leader, setLeader] = useState('')
-    const [id, setId] = useState('')
+    const [item, setItem] = useState('')
+
+    const handleSearch = async() => {
+      try {
+          const data = await axios.get('http://localhost:8000/api/v1/group/filterGroups',{
+            params: {
+              name: item || ''
+            },
+            withCredentials: true
+          })
+    
+
+          if(!data) {
+            throw new ApiError(400, "Search parameters not defined well")
+          }
+
+          console.log(data)
+          setGroups(data.data.data)
+
+      } catch (error) {
+        throw new Error("Failed to search groups !!")
+      }
+    }
 
     useEffect(() => {
         const fetchGroups = async () => {
@@ -18,27 +39,7 @@ function JoinG() {
             if (!item) {
               throw new Error("Failed to fetch groups");
             }
-            
-            // const cadet = await axios.get(
-            //   "http://localhost:8000/api/v1/users/getGroups",
-            //   { withCredentials: true }
-            // );
-
-            // setId(cadet.data.data[0]._id)
-
-            // const leaderData = await axios.get('http://localhost:8000/api/v1/users/getLeader', {
-            //   params: {
-            //     leader: cadet.data.data[0].leader
-            //   },
-            //   withCredentials: true
-            // });
-
-            // if(!leaderData){
-            //   throw new ApiError(400, "Failed to get leader data")
-            // }
-
-            // setLeader(leaderData.data.data.fullName)
-      
+          
             setGroups(item.data.data)
           } catch (error) {
             console.error("Error fetching groups:", error);
@@ -49,26 +50,45 @@ function JoinG() {
       }, []);
 
     return (
-        <div className="flex flex-col min-h-[calc(100vh-5vw)] items-center bg-gradient-to-r from-slate-400 to-slate-800">
-            <div className="flex justify-center items-center gap-[1vw] mt-[2vw]">
-                <Input 
-                    placeholder="Search for groups"
-                />
-                <button className="h-[2vw] w-[2vw]">
-                    <img src="https://static-00.iconduck.com/assets.00/search-icon-2048x2048-cmujl7en.png" alt="serach" />
-                </button>
-            </div>
-
-            <ul className="flex flex-wrap justify-center max-w-[100%] px-[2vw] gap-[1vw] min-h-[40vw] mt-[1vw]">
-                {
-                groups.map((card) => (
-                    <li className="">
-                    <GroupCard2 name={card.name} description={card.description} leader={leader} id={card._id} />
-                    </li>
-                ))
-                }
-            </ul>
+      <div className="flex flex-col min-h-[calc(100vh-5vw)] items-center bg-gradient-to-r from-slate-400 to-slate-800">
+      <div className="relative flex justify-center items-center gap-[1vw] mt-[2vw]">
+        <div className="relative">
+          
+          <Input
+            className="shine-effect h-[3vw] w-[25vw] pl-[1vw] pr-[4vw] text-black rounded-full focus:outline-none shadow-lg"
+            value={item}
+            onChange={(e) => setItem(e.target.value)}
+            placeholder="Search for groups"
+          />
+   
+          <div className="shine-glow"></div>
         </div>
+        <button
+          className="h-[3vw] w-[3vw] bg-blue-600 rounded-full flex justify-center items-center shadow-lg transform hover:scale-110 transition-transform duration-300 ease-in-out"
+          onClick={handleSearch}
+        >
+          <img
+            src="https://static-00.iconduck.com/assets.00/search-icon-2048x2048-cmujl7en.png"
+            alt="search"
+            className="h-[50%] w-[50%]"
+          />
+        </button>
+      </div>
+    
+      <ul className="flex flex-wrap justify-center max-w-[100%] px-[2vw] gap-[1vw] min-h-[40vw] mt-[1vw]">
+        {groups.map((card) => (
+          <li key={card._id} className="">
+            <GroupCard2
+              name={card.name}
+              description={card.description}
+              leader={card.leader.fullName}
+              id={card._id}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+    
     )
 }
 
