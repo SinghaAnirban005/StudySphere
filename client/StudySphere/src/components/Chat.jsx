@@ -50,7 +50,7 @@ function ChatComponent({ groupId, userId, username }) {
               className={`p-3 max-w-xs rounded-lg shadow ${
                 msg.userId === userId
                   ? 'bg-blue-500 text-white self-end'
-                  : 'bg-gray-300 text-black self-start'
+                  : 'bg-gray-400 text-black self-start'
               }`}
             >
               <p className="font-medium">

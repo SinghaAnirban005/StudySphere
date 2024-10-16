@@ -169,8 +169,7 @@ const createGroup = asyncHandler(async (req, res) => {
     try {
       const {username, email} = req.body
       const {groupId} = req.params
-      console.log(req.params)
-
+      
       if(!username || !email) {
         throw new ApiError(400, "Enter all fields")
       }
@@ -183,7 +182,7 @@ const createGroup = asyncHandler(async (req, res) => {
       });
 
       if(!existingUser) {
-        throw new ApiError(400, "User does not exist")
+        throw new ApiError(400, "User already exists !!")
       }
 
       const updatedGroup = await Group.findByIdAndUpdate(

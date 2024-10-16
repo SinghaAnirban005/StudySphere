@@ -58,7 +58,7 @@ function MyGroups() {
             "http://localhost:8000/api/v1/users/getGroups",
             { withCredentials: true }
           );
-          console.log(cadet.data.data)
+          
           const leaderData = await axios.get('http://localhost:8000/api/v1/users/getLeader', {
             params: {
               leader: cadet.data.data[0].leader
