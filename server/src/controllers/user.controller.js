@@ -222,118 +222,118 @@ const getCurrentUser = asyncHandler(async(req, res) => {
     }
 })
 
-const updatefullName = asyncHandler(async(req, res) => {
-    try {
-        const userId = req.user._id
+// const updatefullName = asyncHandler(async(req, res) => {
+//     try {
+//         const userId = req.user._id
 
-        if(!userId) {
-            throw new ApiError(400, "Invalid User")
-        }
+//         if(!userId) {
+//             throw new ApiError(400, "Invalid User")
+//         }
     
-        const user = await User.findByIdAndUpdate(
-            userId,
-            {
-                fullName: fullName
-            },
-            {
-                new: true
-            }
-        )
+//         const user = await User.findByIdAndUpdate(
+//             userId,
+//             {
+//                 fullName: fullName
+//             },
+//             {
+//                 new: true
+//             }
+//         )
     
-        if(!user) {
-            throw new ApiError(400, "User does not exist !!")
-        }
+//         if(!user) {
+//             throw new ApiError(400, "User does not exist !!")
+//         }
     
-        return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                user,
-                "Succesfully updated fullName"
-            )
-        )
-    } catch (error) {
-        throw new ApiError(500, error?.message)
-    }
-})
+//         return res
+//         .status(200)
+//         .json(
+//             new ApiResponse(
+//                 200,
+//                 user,
+//                 "Succesfully updated fullName"
+//             )
+//         )
+//     } catch (error) {
+//         throw new ApiError(500, error?.message)
+//     }
+// })
 
-const updatePassword =asyncHandler(async (req, res) => {
-    const userId  = req.user._id;
-    const { oldPassword, newPassword } = req.body;
+// const updatePassword =asyncHandler(async (req, res) => {
+//     const userId  = req.user._id;
+//     const { oldPassword, newPassword } = req.body;
   
-    try {
-      if (!oldPassword || !newPassword) {
-        throw new ApiError(400, "Old and new passwords are required.")
-      }
+//     try {
+//       if (!oldPassword || !newPassword) {
+//         throw new ApiError(400, "Old and new passwords are required.")
+//       }
   
-      const user = await User.findById(userId);
-      if (!user) {
-        throw new ApiError(400, "User not found")
-      }
+//       const user = await User.findById(userId);
+//       if (!user) {
+//         throw new ApiError(400, "User not found")
+//       }
   
 
-      const isMatch = await bcrypt.compare(oldPassword, user.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: 'Incorrect old password.' });
-      }
+//       const isMatch = await bcrypt.compare(oldPassword, user.password);
+//       if (!isMatch) {
+//         return res.status(400).json({ message: 'Incorrect old password.' });
+//       }
   
    
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
+//       const salt = await bcrypt.genSalt(10);
+//       const hashedPassword = await bcrypt.hash(newPassword, salt);
   
      
-      user.password = hashedPassword;
-      await user.save();
+//       user.password = hashedPassword;
+//       await user.save();
   
-     return res
-     .status(200)
-     .json(
-        new ApiResponse(
-            200,
-            {},
-            "Password updated Succesfully"
-        )
-     )
-    } catch (error) {
-        throw new ApiError(500, error?.message)
-    }
-})
+//      return res
+//      .status(200)
+//      .json(
+//         new ApiResponse(
+//             200,
+//             {},
+//             "Password updated Succesfully"
+//         )
+//      )
+//     } catch (error) {
+//         throw new ApiError(500, error?.message)
+//     }
+// })
 
 
-const updateProfilePicture = asyncHandler(async (req, res) => {
-    const userId  = req.user._id; 
-    const { profilePictureUrl } = req.body;
+// const updateProfilePicture = asyncHandler(async (req, res) => {
+//     const userId  = req.user._id; 
+//     const { profilePictureUrl } = req.body;
   
-    try {
-      if (!profilePictureUrl) {
-        throw new ApiError(400, "Profile picture URL is required.")
-      }
+//     try {
+//       if (!profilePictureUrl) {
+//         throw new ApiError(400, "Profile picture URL is required.")
+//       }
   
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { profilePic: profilePictureUrl },
-        { new: true }
-      );
+//       const updatedUser = await User.findByIdAndUpdate(
+//         userId,
+//         { profilePic: profilePictureUrl },
+//         { new: true }
+//       );
   
-      if (!updatedUser) {
-        throw new ApiError(400, "User not found")
-      }
+//       if (!updatedUser) {
+//         throw new ApiError(400, "User not found")
+//       }
   
-      return res
-      .status(200)
-      .json(
-        new ApiResponse(
-            200, 
-            updatedUser,
-            "Profile picture updated succesfully"
-        )
-      )
-    } catch (error) {
-        throw new ApiError(500, error?.message)
-    }
-  }
-)
+//       return res
+//       .status(200)
+//       .json(
+//         new ApiResponse(
+//             200, 
+//             updatedUser,
+//             "Profile picture updated succesfully"
+//         )
+//       )
+//     } catch (error) {
+//         throw new ApiError(500, error?.message)
+//     }
+//   }
+// )
 
 const getGroups = asyncHandler(async(req, res) => {
     try {
@@ -368,34 +368,6 @@ const getGroups = asyncHandler(async(req, res) => {
     }
 })
 
-// const getLeader = asyncHandler(async(req, res) => {
-//     try {
-//         const {leader} = req.query 
-//         console.log(req.query)
-//         if(!leader) {
-//             throw new ApiError(400, "Leader not found")
-//         }
-
-//         const leaderInfo = await User.findById(leader).select('-password -refreshToken')
-
-//         if(!leaderInfo){
-//             throw new ApiError(400, "Leader not found")
-//         }
-
-//         return res
-//         .status(200)
-//         .json(
-//             new ApiResponse(
-//                 200,
-//                 leaderInfo,
-//                 "Fetched leader info"
-//             )
-//         )
-//     } catch (error) {
-//         throw new ApiError(500, error?.message)
-//     }
-// })
-
 const getLeaderInfo = asyncHandler(async(req, res) => {
     try {
         const {leaderId} = req.body
@@ -424,15 +396,59 @@ const getLeaderInfo = asyncHandler(async(req, res) => {
     }
 })
 
+const updateProfile = asyncHandler(async(req, res) => {
+    try {
+        let updates = {
+
+        }
+
+        if(req.query.fullName) {
+            updates.fullName = req.query.fullName
+        }
+        if(req.query.email){
+            updates.email = req.query.email
+        }
+
+        if(req.query.profilePic){
+            updates.profilePic = req.query.profilePic
+        }
+
+        const updatedProfile = await User.findByIdAndUpdate(
+            req.user._id,
+            updates,
+            {
+                new: true
+            }
+        )
+
+        if(!updateProfile) {
+            throw new ApiError(400, "Profile could not be updated !!")
+        }
+
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                updatedProfile,
+                "Sucessfully updated profile !!"
+            )
+        )
+    } catch (error) {   
+        throw new ApiError(500, "Server error" + error?.message)
+    }
+})
+
 export {
     registerUser,
     logoutUser,
     refreshAccessToken,
     loginUser,
     getCurrentUser,
-    updatefullName,
-    updatePassword,
-    updateProfilePicture,
+    // updatefullName,
+    // updatePassword,
+    // updateProfilePicture,
     getGroups,
-    getLeaderInfo
+    getLeaderInfo,
+    updateProfile
 }

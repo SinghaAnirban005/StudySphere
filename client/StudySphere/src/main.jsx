@@ -10,6 +10,7 @@ import MyGroups from './components/MyGroups.jsx'
 import JoinG from './components/JoinG.jsx'
 import Group from './components/Group.jsx'
 import Access from './components/Access.jsx'
+import Profile from './components/Profile.jsx'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 
@@ -22,6 +23,10 @@ const router = createBrowserRouter(
         {
           path: '/',
           element: <Home />
+        },
+        {
+          path: '/profile',
+          element: <Profile />
         },
         {
           path: '/signUp',

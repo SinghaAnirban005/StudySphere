@@ -43,7 +43,7 @@ function Home() {
             className="bg-white text-black font-semibold py-3 px-6 rounded-full shadow-lg transform transition-transform hover:scale-110 hover:bg-yellow-400 hover:text-white focus:outline-none focus:ring-4 focus:ring-yellow-500 active:scale-95"
             onClick={() => navigate("/profile")}
           >
-            Visit Profile
+            Edit Profile
           </button>
         </div>
       </section>

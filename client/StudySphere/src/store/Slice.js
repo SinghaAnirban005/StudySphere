@@ -36,10 +36,13 @@ const slice = createSlice({
 
             console.log(state.userData.groups)
 
+        },
+        updateUser: (state, action) => {
+            state.userData = action.payload
         }
      }
 })
 
-export const { login, logout, groups, delGroup } = slice.actions;
+export const { login, logout, groups, delGroup, updateUser } = slice.actions;
 
 export default slice.reducer;
