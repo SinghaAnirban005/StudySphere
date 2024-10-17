@@ -3,7 +3,7 @@ import {ApiError} from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Group } from "../models/studyGroup.model.js";
 import { User } from "../models/user.model.js";
-import mongoose from "mongoose";
+
 
 
 const createGroup = asyncHandler(async (req, res) => {
@@ -257,7 +257,7 @@ const createGroup = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          user,
+          group,
           "Deleted group "
         )
       )

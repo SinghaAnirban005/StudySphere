@@ -1,15 +1,17 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import axios from "axios"
+import { groups } from "../store/Slice.js";
 
 function Access() {
 
-    const userData = useSelector((state) => state.userData)
+    
     const {groupId} = useParams()
     const [member, setMember] = useState(false)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     
     const joinGroup = async() => {
         try {
@@ -25,7 +27,8 @@ function Access() {
             if(!signUp) {
                 throw new Error("Failed to add user to group")
             }
-
+       
+            dispatch(groups(signUp.data.data._id))
             alert('Succesfully joined group')
 
             navigate(`/c/${groupId}`)
@@ -40,12 +43,11 @@ function Access() {
         navigate(`/c/${groupId}`)
 
     }
-    
+    const userData = useSelector((state) => state.userData)
     useEffect(() => {
-        const isMember = userData.groups.includes(groupId)
-
-        console.log(userData)
-        console.log(groupId)
+      
+      console.log(userData)
+      const isMember = userData.groups.includes(groupId)
 
         if(isMember) {
             setMember(true)

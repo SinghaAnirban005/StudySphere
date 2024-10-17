@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import GroupCard from "./GroupCard.jsx";
+import { groups } from "../store/Slice.js";
 
 function MyGroups() {
 
@@ -33,7 +34,7 @@ function MyGroups() {
                 throw new Error(400, "Failed to create group")
             }
 
-           
+            dispatch(groups(group.data.data._id))
             alert('Study Group has been succesfully created ')
             setIsOpen(false)
         } catch (error) {

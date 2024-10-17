@@ -22,15 +22,20 @@ const slice = createSlice({
         groups: (state, action) => {
           
             if(state.status == true){
-                state.userGroups = [...action.payload]
+                state.userData.groups = [...state.userData.groups, action.payload]
             }
 
-            console.log(JSON.stringify(state.userGroups))
         },
         delGroup: (state, action) => {
+            
             if(state.status == true) {
-                console.log(action.payload[0])
+                state.userData.groups = state.userData.groups.filter(
+                    (grp) => action.payload.toString() !== grp.toString()
+                )
             }
+
+            console.log(state.userData.groups)
+
         }
      }
 })
