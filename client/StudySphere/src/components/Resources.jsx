@@ -21,7 +21,7 @@ function Resources({ title, description, url, _id, groupId }) {
                 throw new Error(400, "Resource req failed")
             }
 
-            navigate('/')
+            navigate('/group')
 
         } catch (error) {
             console.log(error)

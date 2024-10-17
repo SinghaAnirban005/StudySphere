@@ -3,7 +3,7 @@ import {ApiError} from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Group } from "../models/studyGroup.model.js";
 import { Resource } from "../models/Resources.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js"
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js"
 
 
 const addResource = asyncHandler(async(req, res) => {
@@ -120,6 +120,11 @@ const deleteResources = asyncHandler(async(req, res) => {
            }
 
         )
+
+ 
+        const arr = resource.url.split('/')
+        console.log("Printing arr" + arr)
+        await deleteFromCloudinary(arr[arr.length - 1])
 
         return res
         .status(200)

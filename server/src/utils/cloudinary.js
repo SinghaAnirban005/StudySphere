@@ -13,7 +13,7 @@ const uploadOnCloudinary = async (localFilePath) => {
         if (!localFilePath) return null
         
         const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: "auto"
+            resource_type: "raw"
         })
         
         fs.unlinkSync(localFilePath)
@@ -25,6 +25,26 @@ const uploadOnCloudinary = async (localFilePath) => {
     }
 }
 
+const deleteFromCloudinary = async (publicId) => {
+  try {
+    if (!publicId) {
+      throw new Error("Public ID is required for deletion");
+    }
 
+   
+    const response = await cloudinary.uploader.destroy(publicId, {
+      resource_type: "raw", 
+    });
 
-export {uploadOnCloudinary}
+    if (response.result !== 'ok') {
+      throw new Error(`Failed to delete file with public_id: ${publicId}`);
+    }
+
+    return { success: true, message: "File deleted successfully" };
+  } catch (error) {
+    console.error("Error deleting from Cloudinary:", error);
+    return { success: false, message: error.message };
+  }
+};
+
+export {uploadOnCloudinary, deleteFromCloudinary}
