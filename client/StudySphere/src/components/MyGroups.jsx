@@ -3,10 +3,7 @@ import { useState } from "react";
 import Input from "./Input.jsx";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { ApiError } from "../../../../server/src/utils/ApiError.js";
 import { useDispatch } from "react-redux";
-import { groups } from "../store/Slice.js";
-import { useSelector } from "react-redux";
 import GroupCard from "./GroupCard.jsx";
 
 function MyGroups() {
