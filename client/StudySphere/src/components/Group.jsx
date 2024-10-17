@@ -6,9 +6,10 @@ import axios from "axios"
 import Input from "./Input.jsx";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import Resources from "./Resources.jsx";
 import ChatComponent from "./Chat.jsx";
+import { delGroup } from "../store/Slice.js";
 
 function Group() {
 
@@ -29,6 +30,7 @@ function Group() {
 
     const userId = useParams()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const openForm = () => {
         setIsOpen(true)
@@ -106,6 +108,9 @@ function Group() {
                 throw new Error('Failed to delete group')
             }
 
+            console.log(group)
+
+            dispatch(delGroup(group.data.data._id))
             alert('Group deleted successfully !!')
             navigate('/group')
         } catch (error) {
@@ -123,6 +128,7 @@ function Group() {
             if(!addMem) {
                 throw new Error("Request failed to add members")
             }
+            console.log(addMem)
             
             navigate('/group')
         } catch (error) {
@@ -141,7 +147,9 @@ function Group() {
                 throw new Error(400, "No group found ")
             }
 
+            dispatch(delGroup(group.data.data._id))
             alert('You have left the group')
+
             navigate('/group')
         } catch (error) {
             console.log(error)
