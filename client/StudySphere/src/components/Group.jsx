@@ -6,6 +6,7 @@ import axios from "axios"
 import Input from "./Input.jsx";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux"
 import Resources from "./Resources.jsx";
 import ChatComponent from "./Chat.jsx";
 
@@ -18,11 +19,13 @@ function Group() {
     const { register, handleSubmit } = useForm()
     const [isOpen, setIsOpen] = useState(false)
     const [isRes, setIsRes] = useState(false)
+    const userData = useSelector((state) => state.userData)
 
     const [members, setMembers] = useState([])
     const [resources, setResources] = useState([])
     const [userID, setUserID] = useState('')
     const [username, setUsername] = useState('')
+    const [leader, setLeader] = useState('')
 
     const userId = useParams()
     const navigate = useNavigate()
@@ -50,18 +53,18 @@ function Group() {
          
             const memberData = await axios.get(`http://localhost:8000/api/v1/group/c/${newId}`, {withCredentials: true})
             const resourceData = await axios.get(`http://localhost:8000/api/v1/resource/getResource/${newId}`, {withCredentials: true})
-            const userData = await axios.get('http://localhost:8000/api/v1/users/getUser', {withCredentials: true}) 
+             
 
             if(!memberData) {
                 throw new Error('No member data')
             }
 
-            console.log(memberData)
-
+            const userData = await axios.get('http://localhost:8000/api/v1/users/getUser', {withCredentials: true})
             if(!userData) {
                 throw new  Error("No user data")
             }
-
+  
+            setLeader(memberData.data.data.group.leader.fullName)
             setUserID(userData.data.data._id)
             setUsername(userData.data.data.username)
             setMembers(memberData.data.data.member)
@@ -91,6 +94,26 @@ function Group() {
         setMem(false)
     }
 
+    const deleteGroup = async() => {
+        try {
+            const groupId = userId.groupId
+            
+            const group = await axios.delete(`http://localhost:8000/api/v1/group/delete/${groupId}`, {
+                withCredentials: true
+            })
+
+            if(!group) {
+                throw new Error('Failed to delete group')
+            }
+
+            alert('Group deleted successfully !!')
+            navigate('/group')
+        } catch (error) {
+            console.log(error.message)
+            throw new Error('Failed to delete group')
+        }
+    }
+
     const addMember = async(data) => {
         try {
             const addMem = await axios.post(`http://localhost:8000/api/v1/group/add/${userId.groupId}`, data, {
@@ -105,6 +128,24 @@ function Group() {
         } catch (error) {
             console.log(error.message)
             throw error
+        }
+    }
+
+    const leaveGroup = async() => {
+        try {
+            const group = await axios.put(`http://localhost:8000/api/v1/group/leave/${userId.groupId}`, {}, {
+                withCredentials: true
+            })
+
+            if(!group) {
+                throw new Error(400, "No group found ")
+            }
+
+            alert('You have left the group')
+            navigate('/group')
+        } catch (error) {
+            console.log(error)
+            throw new Error(error?.message)
         }
     }
 
@@ -313,19 +354,48 @@ function Group() {
 
                 {
                     mem && (
-                        <button className="bg-blue-500 w-[10vw] mt-[2vw] text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-blue-600 hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95" onClick={openForm}>
-                            Add Members
-                        </button>
+                        <div className="flex justify-between items-center">
+                            <button className="bg-blue-500 w-[10vw] mt-[2vw] text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-blue-600 hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95" onClick={openForm}>
+                                Add Members
+                            </button>
+                            {
+                                userData.fullName === leader ? (
+                                    <button className="bg-red-500 w-[10vw] text-white rounded-full h-[3vw]" onClick={deleteGroup}>
+                                        Delete Group
+                                    </button>
+                                ) : (
+                                    <button className="bg-red-500 w-[10vw] text-white rounded-full h-[3vw]" onClick={leaveGroup}>
+                                        Leave Group
+                                    </button>
+                                )
+                            }
+                        </div>
+                        
                     )
                 }
 
                 {
                     res && (
-                        <button className="bg-blue-500 w-[10vw] mt-[2vw] text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-blue-600 hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95" onClick={openRes}>
-                            Add Resource
-                        </button>
+                        <div className="flex justify-between items-center">
+                            <button className="flex bg-blue-500 w-[10vw] mt-[2vw] text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-blue-600 hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95" onClick={openRes}>
+                                Add Resource
+                            </button>
+                            {
+                                userData.fullName === leader ? (
+                                    <button className="bg-red-500 w-[10vw] text-white rounded-full h-[3vw]" onClick={deleteGroup}>
+                                        Delete Group
+                                    </button>
+                                ) : (
+                                    <button className="bg-red-500 w-[10vw] text-white rounded-full h-[3vw]">
+                                        Leave Group
+                                    </button>
+                                )
+                            }
+                        </div>
                     )
                 }
+
+                
             </div>
         </div>
     )

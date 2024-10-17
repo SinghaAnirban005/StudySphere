@@ -140,7 +140,7 @@ const createGroup = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Group Id does not exist")
       }
 
-      const group = await Group.findById(groupId)
+      const group = await Group.findById(groupId).populate('leader', 'fullName _id')
 
       if(!group) {
         throw new ApiError(400, "Failed to fetch group")
@@ -266,6 +266,56 @@ const createGroup = asyncHandler(async (req, res) => {
     }
   })
 
+  const leaveGroup = asyncHandler(async(req, res) => {
+    try {
+      const {groupId} = req.params
+      const userId = req.user._id
+
+      if(!groupId) {
+        throw new ApiError(400, "Invalid user ID")
+      } 
+
+      const group = await Group.findById(groupId);
+
+      if (!group) {
+        throw new ApiError(404, "Group not found");
+      }
+
+      group.members = group.members.filter((member) => member.toString() !== userId.toString())
+
+      await group.save()
+
+      const user = await User.findByIdAndUpdate(
+        userId,
+        {
+          $pull: {
+            groups: groupId
+          }
+        },
+        {
+          new: true
+        }
+      )
+
+      if(!user){
+        throw new ApiError(400, "Failed to update user")
+      }
+
+      return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          group,
+          "You have left the group"
+        )
+      )
+
+    } catch (error) {
+      throw new ApiError(500, "Server error ::" + error?.message)
+    }
+  })
+
   const filterGroups = asyncHandler(async(req, res) => {
     try {
         const {name} = req.query
@@ -308,5 +358,6 @@ const createGroup = asyncHandler(async (req, res) => {
     getGroupInfo,
     addMember,
     deleteGroup,
-    filterGroups
+    filterGroups,
+    leaveGroup
   }

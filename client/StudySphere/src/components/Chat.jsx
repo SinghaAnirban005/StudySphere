@@ -71,7 +71,7 @@ function ChatComponent({ groupId, userId, username }) {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="flex-grow p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-grow p-2 border rounded-l-lg focus:outline-none bg-slate-300 focus:ring-2 focus:ring-blue-500"
           placeholder="Type your message..."
         />
         <button

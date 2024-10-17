@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { useSelector } from "react-redux";
 
 function GroupCard({name, description, _id, leader }) {
 
     const navigate = useNavigate()
+    const userData = useSelector((state) => state.userData)
 
     const viewGroup = () => {
         navigate(`/c/${_id}`)
@@ -35,7 +37,9 @@ function GroupCard({name, description, _id, leader }) {
         onClick={viewGroup}
       >
         <div className="flex justify-end">
-          <img
+          {
+            userData.fullName === leader ? (
+              <img
             src="https://www.shutterstock.com/image-vector/trash-bin-icon-vector-recycle-260nw-1909485802.jpg"
             className="h-[2vw] w-[2vw] rounded-full hover:shadow-md hover:shadow-red-400 transition-shadow duration-300"
             alt="delete"
@@ -44,6 +48,8 @@ function GroupCard({name, description, _id, leader }) {
               handleDeletion();
             }}
           />
+            ) : null
+          }
         </div>
       
         <div className="flex flex-col items-center space-y-2">
