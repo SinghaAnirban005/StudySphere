@@ -316,7 +316,7 @@ function Group() {
                         Resources
                     </button>
                     <button  onClick={handleVid} className="bg-yellow-400 text-slate-800 py-2 px-6 rounded-lg shadow-lg hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
-                        Video
+                        WhiteBoard
                     </button>
                 </div>
 
@@ -355,7 +355,7 @@ function Group() {
                 {
                     vid && (
                         <div className="h-[35vw] mt-[2vw]">
-                            Video call here
+                            Collaborative whiteboard
                         </div>
                     )
                 }
