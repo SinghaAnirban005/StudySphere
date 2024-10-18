@@ -20,10 +20,7 @@ function Profile() {
        
         setLoading(true);
 
-        // const formData = new FormData();
-        // if (fullName) formData.append('fullName', fullName);
-        // if (email) formData.append('email', email);
-        // if (profilePic) formData.append('profilePic', profilePic);
+  
         console.log(data)
         try {
             const response = await axios.put(

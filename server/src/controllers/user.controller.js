@@ -4,7 +4,6 @@ import { User } from "../models/user.model.js";
 import { Group } from "../models/studyGroup.model.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
-import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import mongoose, { mongo } from "mongoose";
 
