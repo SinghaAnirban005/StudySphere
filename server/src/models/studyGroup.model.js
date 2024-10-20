@@ -29,6 +29,10 @@ const GroupSchema = new mongoose.Schema({
         type: String,
         ref: mongoose.Schema.Types.ObjectId
     },
+    whiteboard: {
+        type: mongoose.Types.ObjectId,
+        ref: 'whiteBoard'
+    },
     createdAt: {
         type: Date,
         default: Date.now,

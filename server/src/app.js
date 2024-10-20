@@ -3,7 +3,6 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { createServer } from "http";  
 import { Server } from "socket.io"; 
-import mongoose from "mongoose";
 
 import Message from "./models/Message.model.js";
 
@@ -21,7 +20,7 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 
-app.use(express.json({ limit: "16kb" }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
@@ -31,11 +30,13 @@ import userRouter from "./routes/user.routes.js";
 import groupRouter from "./routes/group.routes.js";
 import resourceRouter from "./routes/resource.routes.js";
 import chatRouter from "./routes/chat.routes.js";
+import whiteboardRouter from "./routes/whiteboard.routes..js"
 
 app.use("/api/v1/users", userRouter);
 app.use('/api/v1/group', groupRouter);
 app.use('/api/v1/resource', resourceRouter);
 app.use('/api/v1/chat', chatRouter);
+app.use('/api/v1/whiteboard', whiteboardRouter)
 
 // Create the HTTP server and integrate Socket.io
 const server = createServer(app);

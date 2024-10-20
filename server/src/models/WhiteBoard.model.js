@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import { Schema } from "mongoose"
 
-const whiteboardSchema = new Schema( {
+const whiteboardSchema = new Schema({
     groupId : {
         type: mongoose.Types.ObjectId,
         ref: 'Group'
