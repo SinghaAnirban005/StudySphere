@@ -16,7 +16,6 @@ function Group() {
     const [groupData, setGroupData] = useState({})
     const [mem, setMem] = useState(true)
     const [res, setRes] = useState(false)
-    const [vid, setVid] = useState(false)
     const { register, handleSubmit } = useForm()
     const [isOpen, setIsOpen] = useState(false)
     const [isRes, setIsRes] = useState(false)
@@ -28,7 +27,7 @@ function Group() {
     const [username, setUsername] = useState('')
     const [leader, setLeader] = useState('')
 
-    const userId = useParams()
+    const userId = useParams() // userId is the object which holds groupId
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -80,21 +79,19 @@ function Group() {
     // Methods to toggle between various headers
     const handleMem = () => {
         setRes(false)
-        setVid(false)
         setMem(true)
     }
 
     const handleRes = () => {
         setRes(true)
-        setVid(false)
         setMem(false)
     }
 
-    const handleVid = () => {
-        setRes(false)
-        setVid(true)
-        setMem(false)
-    }
+    // const handleVid = () => {
+    //     setRes(false)
+    //     setVid(true)
+    //     setMem(false)
+    // }
 
     const deleteGroup = async() => {
         try {
@@ -315,7 +312,7 @@ function Group() {
                     <button onClick={handleRes} className="bg-yellow-400 text-slate-800 py-2 px-6 rounded-lg shadow-lg hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
                         Resources
                     </button>
-                    <button  onClick={handleVid} className="bg-yellow-400 text-slate-800 py-2 px-6 rounded-lg shadow-lg hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
+                    <button  onClick={() => navigate(`/whiteboard/${userId.groupId}`)} className="bg-yellow-400 text-slate-800 py-2 px-6 rounded-lg shadow-lg hover:bg-yellow-500 transition duration-300 transform hover:scale-105">
                         WhiteBoard
                     </button>
                 </div>
@@ -352,13 +349,13 @@ function Group() {
                 }
 
 
-                {
+                {/* {
                     vid && (
                         <div className="h-[35vw] mt-[2vw]">
                             Collaborative whiteboard
                         </div>
                     )
-                }
+                } */}
 
                 {
                     mem && (

@@ -40,11 +40,14 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    groups:[ {
+    groups:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Group'
     }],
-    
+    whiteboard: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'whiteBoard'
+    },
     refreshToken: {
         type: String
     }

@@ -3,7 +3,7 @@ import {ApiError} from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Group } from "../models/studyGroup.model.js";
 import { User } from "../models/user.model.js";
-
+import { whiteBoard } from "../models/WhiteBoard.model.js";
 
 
 const createGroup = asyncHandler(async (req, res) => {
@@ -19,10 +19,16 @@ const createGroup = asyncHandler(async (req, res) => {
     const leaderId = req.user._id
     
     try {
+
+      const newWhiteBoard = await whiteBoard.create({
+        whiteboardState:{}
+      })
+
       const newGroup = new Group({
         name,
         leader: leaderId, 
-        description
+        description,
+        whiteboard: newWhiteBoard._id
       });
 
       newGroup.members.push(leaderId)

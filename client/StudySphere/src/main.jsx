@@ -11,6 +11,7 @@ import JoinG from './components/JoinG.jsx'
 import Group from './components/Group.jsx'
 import Access from './components/Access.jsx'
 import Profile from './components/Profile.jsx'
+import WhiteBoard from './components/WhiteBoard.jsx'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 
@@ -51,6 +52,10 @@ const router = createBrowserRouter(
         {
           path: 'joinGroups/join/:groupId',
           element: <Access />
+        },
+        {
+          path: '/whiteboard/:groupId',
+          element: <WhiteBoard /> 
         }
       ]
     }
