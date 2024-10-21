@@ -54,7 +54,8 @@ function Home() {
       />
     </div>
   ) : (
-    <div className="flex justify-around items-center min-h-[calc(100vh-5vw)] bg-gradient-to-r from-transparent to-yellow-400 p-8">
+    <div className="flex flex-col justify-around min-h-[calc(100vh-5vw)] bg-gradient-to-r from-yellow-100 to-yellow-400 p-8">
+      <div className="flex justify-around items-center">
       <img
         src="https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA4L3Jhd3BpeGVsb2ZmaWNlOV8zZF9jaGFyYWN0ZXJfaWxsdXN0cmF0aW9uX2Z1bGxib2R5X2lzb2xhdGVkX2luX19mY2Q2NjZjNy1mMzJjLTQ1MzQtYmQ3NS05NTI0NzgxZjUzYmNfMi5wbmc.png"
         alt="Cartoon"
@@ -62,7 +63,7 @@ function Home() {
       />
       <div className="max-w-[70vw] h-[40vw] text-center space-y-6">
         <h1 className="text-[3vw] font-bold text-gray-900">
-          Revolutionize How You Collaborate and Learn Together!
+          Revolutionize How You Collaborate and Learn Together 📖
         </h1>
         <h2 className="text-[1.8vw] mt-[1.3vw] text-gray-700">
           Empower your group studies with seamless collaboration, shared
@@ -75,10 +76,71 @@ function Home() {
           className="bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-200 transition duration-300 mt-[2vw] shadow-md transform transition-transform hover:scale-105"
           onClick={() => navigate("/login")}
         >
-          Join Us Today
+          Join Us Today 🙂
         </button>
       </div>
+      </div>
+
+    <div className="flex flex-col items-center bg-gray-50 rounded-md justify-center mt-[4vw] py-20">
+      <h1 className="text-4xl font-bold text-gray-800 mb-10">How It Works</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl">
+        {/* Step 1 */}
+        <div className="flex flex-col items-center text-center space-y-4 p-6 shadow-lg rounded-lg bg-white">
+          <div className="bg-yellow-400 text-white w-16 h-16 flex items-center justify-center rounded-full text-2xl font-bold">1</div>
+          <h2 className="text-xl font-semibold text-gray-700">Create or Join a Group</h2>
+          <p className="text-gray-600">
+            Easily create or join study groups to collaborate with peers. Share knowledge, resources, and ideas in a focused group environment.
+          </p>
+        </div>
+
+        {/* Step 2 */}
+        <div className="flex flex-col items-center text-center space-y-4 p-6 shadow-lg rounded-lg bg-white">
+          <div className="bg-yellow-400 text-white w-16 h-16 flex items-center justify-center rounded-full text-2xl font-bold">2</div>
+          <h2 className="text-xl font-semibold text-gray-700">Collaborate on a Whiteboard</h2>
+          <p className="text-gray-600">
+            Engage with an interactive whiteboard to share ideas and visuals. Perfect for brainstorming and problem-solving in real-time.
+          </p>
+        </div>
+
+        {/* Step 3 */}
+        <div className="flex flex-col items-center text-center space-y-4 p-6 shadow-lg rounded-lg bg-white">
+          <div className="bg-yellow-400 text-white w-16 h-16 flex items-center justify-center rounded-full text-2xl font-bold">3</div>
+          <h2 className="text-xl font-semibold text-gray-700">Share Resources</h2>
+          <p className="text-gray-600">
+            Upload and share study materials, lecture notes, and other resources. Collaborate efficiently with your group by providing valuable content.
+          </p>
+        </div>
+
+        {/* Step 4 */}
+        <div className="flex flex-col items-center text-center space-y-4 p-6 shadow-lg rounded-lg bg-white">
+          <div className="bg-yellow-400 text-white w-16 h-16 flex items-center justify-center rounded-full text-2xl font-bold">4</div>
+          <h2 className="text-xl font-semibold text-gray-700">Track Progress</h2>
+          <p className="text-gray-600">
+            Stay organized with task assignments and analytics that track your group’s progress. Smart tools help you manage your learning journey.
+          </p>
+        </div>
+
+        {/* Step 5 */}
+        <div className="flex flex-col items-center text-center space-y-4 p-6 shadow-lg rounded-lg bg-white">
+          <div className="bg-yellow-400 text-white w-16 h-16 flex items-center justify-center rounded-full text-2xl font-bold">5</div>
+          <h2 className="text-xl font-semibold text-gray-700">Stay Connected</h2>
+          <p className="text-gray-600">
+            Chat with your group members directly within the platform. Keep communication open and stay on the same page with easy access to all group members.
+          </p>
+        </div>
+      </div>
+
+      <button
+        className="mt-10 bg-yellow-400 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-500 transition-transform transform hover:scale-105"
+        onClick={() => navigate("/login")}
+      >
+        Get Started
+      </button>
     </div>
+
+  </div>
+    
   );
 }
 
