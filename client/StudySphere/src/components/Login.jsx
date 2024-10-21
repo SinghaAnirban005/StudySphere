@@ -5,15 +5,19 @@ import { useForm } from "react-hook-form";
 import Input from "./Input.jsx";
 import { useDispatch } from "react-redux";
 import { login } from "../store/Slice.js";
+import { Comment } from "react-loader-spinner"
 import axios from "axios";
 
 function Login() {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+    const [ loading, setLoading ] = useState(false)
     const { register, handleSubmit } = useForm();
     const dispatch = useDispatch();
 
     const loginAccount = async (data) => {
+        setLoading(true)
+
         try {
             const loggedIn = await axios.post(
                 "http://localhost:8000/api/v1/users/signIn",
@@ -41,10 +45,27 @@ function Login() {
                     (error?.response?.data?.message || error?.message)
             );
         }
+        finally{
+            setLoading(false)
+        }
     };
 
     return (
-        <div
+        loading ? (
+            <div className="flex justify-center items-center bg-cover bg-center w-full min-h-screen">
+                <Comment
+                    visible={true}
+                    height="80"
+                    width="80"
+                    ariaLabel="comment-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="comment-wrapper"
+                    color="#fff"
+                    backgroundColor="#F4442E"
+                />
+            </div>
+        ) : (
+            <div
             className="flex justify-center items-center bg-cover bg-center w-full min-h-screen"
             style={{
                 backgroundImage:
@@ -108,6 +129,7 @@ function Login() {
                 </form>
             </div>
         </div>
+        )   
     );
 }
 

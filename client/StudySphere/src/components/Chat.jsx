@@ -1,30 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import moment from 'moment'; // To handle timestamp formatting
+import { Comment } from "react-loader-spinner"
 
 const socket = io('http://localhost:8000'); // Connect to the server
 
 function ChatComponent({ groupId, userId, username }) {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [ loading, setLoading ] = useState(false)
 
   useEffect(() => {
-    socket.emit('join_group', groupId);
-
-    socket.on('chat_history', (history) => {
-      setMessages(history);
-    });
-
-    socket.on('receive_message', (data) => {
-      console.log(data)
-      setMessages((prev) => [...prev, data]);
-    });
-
-    return () => {
-      socket.emit('leave_group', groupId);
-      socket.off('chat_history');
-      socket.off('receive_message');
-    };
+    setLoading(true)
+    try {
+      socket.emit('join_group', groupId);
+  
+      socket.on('chat_history', (history) => {
+        setMessages(history);
+      });
+  
+      socket.on('receive_message', (data) => {
+        console.log(data)
+        setMessages((prev) => [...prev, data]);
+      });
+  
+      return () => {
+        socket.emit('leave_group', groupId);
+        socket.off('chat_history');
+        socket.off('receive_message');
+      };
+    } catch (error) {
+      throw new Error("Failed to load messages :: " + error?.message)
+    }
+    finally{
+      setLoading(false)
+    }
   }, [groupId]);
 
   const sendMessage = () => {
@@ -35,7 +45,21 @@ function ChatComponent({ groupId, userId, username }) {
   };
 
   return (
-    <div className="flex flex-col h-full max-h-screen p-4">
+    loading ? (
+      <div className='flex h-full max-h-screen p-4'> 
+          <Comment
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="comment-loading"
+            wrapperStyle={{}}
+            wrapperClass="comment-wrapper"
+            color="#fff"
+            backgroundColor="#F4442E"
+          />
+      </div>
+    ) : (
+      <div className="flex flex-col h-full max-h-screen p-4">
    
       <div className="flex-grow overflow-y-auto bg-gray-100 p-4 rounded-lg space-y-3">
         {messages.map((msg, index) => (
@@ -82,6 +106,7 @@ function ChatComponent({ groupId, userId, username }) {
         </button>
       </div>
     </div>
+    )
   );
 }
 
