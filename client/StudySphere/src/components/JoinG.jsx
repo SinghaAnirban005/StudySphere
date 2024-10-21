@@ -2,10 +2,12 @@ import React from "react";
 import { useState, useEffect } from "react";
 import Input from "./Input";
 import GroupCard2 from "./GroupCard2.jsx";
+import { Comment } from "react-loader-spinner";
 import axios from "axios";
 
 function JoinG() {
 
+    const [loading, setLoading] = useState(false)
     const [groups, setGroups] = useState([])
     const [item, setItem] = useState('')
 
@@ -32,6 +34,7 @@ function JoinG() {
     }
 
     useEffect(() => {
+      setLoading(true)
         const fetchGroups = async () => {
           try {
             const item = await axios.get('http://localhost:8000/api/v1/group/getG');
@@ -44,13 +47,30 @@ function JoinG() {
           } catch (error) {
             console.error("Error fetching groups:", error);
           }
+          finally{
+            setLoading(false)
+          }
         };
       
         fetchGroups();
       }, []);
 
     return (
-      <div className="flex flex-col min-h-[calc(100vh-5vw)] items-center bg-gradient-to-r from-slate-400 to-slate-800">
+      loading ? (
+        <div className="flex min-h-[calc(100vh-5vw)] justify-center items-center bg-gradient-to-r from-slate-400 to-slate-800">
+          <Comment
+          visible={true}
+          height="80"
+          width="80"
+          ariaLabel="comment-loading"
+          wrapperStyle={{}}
+          wrapperClass="comment-wrapper"
+          color="#fff"
+          backgroundColor="#F4442E"
+        />
+        </div>
+      ) : (
+        <div className="flex flex-col min-h-[calc(100vh-5vw)] items-center bg-gradient-to-r from-slate-400 to-slate-800">
       <div className="relative flex justify-center items-center gap-[1vw] mt-[2vw]">
         <div className="relative">
           
@@ -89,6 +109,7 @@ function JoinG() {
       </ul>
     </div>
     
+      )
     )
 }
 

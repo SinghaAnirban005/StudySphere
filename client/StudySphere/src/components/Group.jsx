@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux"
 import Resources from "./Resources.jsx";
 import ChatComponent from "./Chat.jsx";
 import { delGroup } from "../store/Slice.js";
+import { Comment } from "react-loader-spinner";
 
 function Group() {
 
@@ -20,6 +21,7 @@ function Group() {
     const [isOpen, setIsOpen] = useState(false)
     const [isRes, setIsRes] = useState(false)
     const userData = useSelector((state) => state.userData)
+    const [ loading, setLoading ] = useState(false)
 
     const [members, setMembers] = useState([])
     const [resources, setResources] = useState([])
@@ -48,32 +50,30 @@ function Group() {
     }
 
     useEffect(() => {
-      
-        const fetchUser = async function () {   
-            const newId = userId.groupId
-         
-            const memberData = await axios.get(`http://localhost:8000/api/v1/group/c/${newId}`, {withCredentials: true})
-            const resourceData = await axios.get(`http://localhost:8000/api/v1/resource/getResource/${newId}`, {withCredentials: true})
-             
+        const fetchUser = async () => {
+            setLoading(true); 
+            try {
+                const newId = userId.groupId;
 
-            if(!memberData) {
-                throw new Error('No member data')
+                const memberData = await axios.get(`http://localhost:8000/api/v1/group/c/${newId}`, { withCredentials: true });
+                const resourceData = await axios.get(`http://localhost:8000/api/v1/resource/getResource/${newId}`, { withCredentials: true });
+                const userData = await axios.get('http://localhost:8000/api/v1/users/getUser', { withCredentials: true });
+
+                if (!memberData || !userData) throw new Error('Failed to fetch data');
+
+                setLeader(memberData.data.data.group.leader.fullName);
+                setUserID(userData.data.data._id);
+                setUsername(userData.data.data.username);
+                setMembers(memberData.data.data.member);
+                setResources(resourceData.data.data);
+            } catch (error) {
+                console.error('Error fetching data:', error.message);
+            } finally {
+                setLoading(false); 
             }
+        };
 
-            const userData = await axios.get('http://localhost:8000/api/v1/users/getUser', {withCredentials: true})
-            if(!userData) {
-                throw new  Error("No user data")
-            }
-  
-            setLeader(memberData.data.data.group.leader.fullName)
-            setUserID(userData.data.data._id)
-            setUsername(userData.data.data.username)
-            setMembers(memberData.data.data.member)
-            setResources(resourceData.data.data)
-        }
-
-        fetchUser()
-        
+        fetchUser();
     }, [])
 
     // Methods to toggle between various headers
@@ -86,12 +86,6 @@ function Group() {
         setRes(true)
         setMem(false)
     }
-
-    // const handleVid = () => {
-    //     setRes(false)
-    //     setVid(true)
-    //     setMem(false)
-    // }
 
     const deleteGroup = async() => {
         try {
@@ -110,6 +104,7 @@ function Group() {
             dispatch(delGroup(group.data.data._id))
             alert('Group deleted successfully !!')
             navigate('/group')
+
         } catch (error) {
             console.log(error.message)
             throw new Error('Failed to delete group')
@@ -180,10 +175,23 @@ function Group() {
             throw new Error(error.message)
         }
     }
-
      
     return (
+
         <div className="flex justify-around min-h-[calc(100vh-5vw)] bg-gradient-to-r from-slate-400 to-slate-800">
+            
+            {loading && (
+                <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+                    <Comment
+                     visible={true} 
+                     height="80" 
+                     width="80" 
+                     color="yellow" 
+                     ariaLabel="comment-loading" 
+                    />
+                </div>
+            )}
+            
             <div className="bg-white w-[50%] rounded-xl">
                 <ChatComponent groupId={userId.groupId} userId={userID} username={username} /> 
             </div>
@@ -318,7 +326,7 @@ function Group() {
                 </div>
 
                 {
-                    mem && (
+                    mem && (       
                         <ul className="h-[30vw] mt-[2vw] flex flex-col overflow-y-auto gap-[1vw]" >
                             {
                                 members.map((mtr) => (
@@ -328,8 +336,7 @@ function Group() {
                                 ))
                             }
                         </ul> 
-                    )
-
+                       )
                 }
 
 
@@ -347,15 +354,6 @@ function Group() {
                         </ul>
                     )
                 }
-
-
-                {/* {
-                    vid && (
-                        <div className="h-[35vw] mt-[2vw]">
-                            Collaborative whiteboard
-                        </div>
-                    )
-                } */}
 
                 {
                     mem && (
@@ -403,6 +401,7 @@ function Group() {
                 
             </div>
         </div>
+        
     )
 }
 

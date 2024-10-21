@@ -6,10 +6,12 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import GroupCard from "./GroupCard.jsx";
 import { groups } from "../store/Slice.js";
+import { Comment } from "react-loader-spinner"
 
 function MyGroups() {
 
     const [isOpen, setIsOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
     const { register, handleSubmit } = useForm()
     const dispatch = useDispatch()
     const [leaders, setLeaders] = useState([])
@@ -43,6 +45,7 @@ function MyGroups() {
     }
 
     useEffect(() => {
+      setLoading(true)
       const fetchGroups = async () => {
         try {
           
@@ -56,6 +59,9 @@ function MyGroups() {
         } catch (error) {
           console.error("Error loading groups", error);
         }
+        finally{
+          setLoading(false)
+        }
       };
   
       fetchGroups();
@@ -64,7 +70,21 @@ function MyGroups() {
     
 
     return (
-        <div className="flex flex-col min-h-[calc(100vh-5vw)] items-center bg-gradient-to-r from-slate-400 to-slate-800">
+        loading ? (
+          <div className="flex min-h-[calc(100vh-5vw)] justify-center items-center bg-gradient-to-r from-slate-400 to-slate-800">
+          <Comment
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="comment-loading"
+            wrapperStyle={{}}
+            wrapperClass="comment-wrapper"
+            color="#fff"
+            backgroundColor="#F4442E"
+          />
+          </div>
+        ) : (
+          <div className="flex flex-col min-h-[calc(100vh-5vw)] items-center bg-gradient-to-r from-slate-400 to-slate-800">
             <button onClick={openForm} className="bg-blue-500 max-w-[10vw] mt-[1vw] text-white py-3 px-6 rounded-lg shadow-lg hover:bg-blue-600 h-[3vw] transition duration-300">
                 Create
             </button>
@@ -138,6 +158,7 @@ function MyGroups() {
       }
 
         </div>
+        )
     )
 }
 

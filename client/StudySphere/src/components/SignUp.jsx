@@ -5,16 +5,19 @@ import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { login } from "../store/Slice.js";
 import axios from "axios";
+import { Comment } from "react-loader-spinner"
 import Input from "./Input.jsx";
 
 function SignUp() {
     const [error, setError] = useState('');
     const { register, handleSubmit } = useForm();
+    const [loading, setLoading] = useState(false)
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const createAccount = async function (data) {
         try {
+            setLoading(true)
             const formData = new FormData();
             formData.append('fullName', data.fullName);
             formData.append('email', data.email);
@@ -52,10 +55,27 @@ function SignUp() {
                 (error?.response?.data?.message || error?.message)
             );
         }
+        finally{
+            setLoading(false)
+        }
     };
 
     return (
-        <div
+        loading ? (
+            <div className="flex justify-center items-center bg-cover bg-center w-full h-[60vw]">
+                <Comment
+                    visible={true}
+                    height="80"
+                    width="80"
+                    ariaLabel="comment-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="comment-wrapper"
+                    color="#fff"
+                    backgroundColor="#F4442E"
+                />                
+            </div>
+        ) : (
+            <div
             className="flex justify-center items-center bg-cover bg-center w-full h-[60vw]"
             style={{
                 backgroundImage:
@@ -129,6 +149,7 @@ function SignUp() {
                 </form>
             </div>
         </div>
+        )
     );
 }
 
