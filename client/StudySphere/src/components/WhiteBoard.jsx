@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import { useParams } from 'react-router-dom';
+import { jsPDF } from "jspdf"
 import axios from 'axios';
 
 const Whiteboard = () => {
@@ -65,6 +66,14 @@ const Whiteboard = () => {
         canvasRef.current.undo()
     }
 
+    const exportToPDF = () => {
+        const canvas = canvasRef.current.canvas.drawing
+        const imgData = canvas.toDataURL("image/png")
+
+        const pdf = new jsPDF()
+        pdf.addImage(imgData, 'PNG', 10, 10, 180, 160)
+        pdf.save("whiteboard_drawing.pdf")
+    }
 
     return (
         <div className="p-4">
@@ -74,7 +83,7 @@ const Whiteboard = () => {
             ) : (
                 <CanvasDraw
                     ref={canvasRef}
-                    canvasWidth={1200}
+                    canvasWidth={1400}
                     canvasHeight={600}
                     saveData={whiteboardState}
                     className="border border-gray-400"
@@ -118,10 +127,14 @@ const Whiteboard = () => {
                 </div>
                 <select onChange={(e) => setBrushColor(e.target.value)}>
                     <option value="#ff0000">Red</option>
-                    <option value="#0080000">Green</option>
+                    <option value="#008000">Green</option>
                     <option value="#FFFF00">Yellow</option>
                     <option value="#964B00">Brown</option>
+                    <option value='#444'>Default</option>
                 </select>
+                <button onClick={exportToPDF} className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition'>
+                    Export As PDF
+                </button>
             </div>
         </div>
     );
