@@ -16,8 +16,21 @@ const createGroup = asyncHandler(async (req, res) => {
     if(!description) {
       throw new ApiError(400, "Please enter description for group")
     }
+    
     const leaderId = req.user._id
     
+    const groups = await Group.find(
+      {
+        leader: leaderId
+      }
+    )
+
+    groups.forEach((grp) => {
+      if(grp.name === name && grp.description === description) {
+        throw new ApiError(400, "Study Group already exists !!")
+      }
+    }) 
+
     try {
 
       const newWhiteBoard = await whiteBoard.create({
