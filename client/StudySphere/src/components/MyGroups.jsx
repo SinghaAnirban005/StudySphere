@@ -40,6 +40,7 @@ function MyGroups() {
             alert('Study Group has been succesfully created ')
             setIsOpen(false)
         } catch (error) {
+          alert('⚠️ Cannot create Group ⚠️')
             throw new Error(error?.message)
         }
     }

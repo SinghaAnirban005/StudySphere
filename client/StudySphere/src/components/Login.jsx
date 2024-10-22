@@ -40,10 +40,13 @@ function Login() {
             dispatch(login(userData.data.data));
             navigate("/");
         } catch (error) {
-            setError(
-                "Login failed: " +
-                    (error?.response?.data?.message || error?.message)
-            );
+            const errorData = error.response.data;
+          
+            const extractedMessage = errorData.match(/<pre>Error:\s(.*?)<br>/);
+
+            if (extractedMessage && extractedMessage[1]) {
+                setError(extractedMessage[1])
+            }
         }
         finally{
             setLoading(false)

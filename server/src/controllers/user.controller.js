@@ -86,6 +86,10 @@ const loginUser = asyncHandler(async (req, res) =>{
     if (!email) {
         throw new ApiError(400, "Email is required")
     }
+
+    if(!password) {
+        throw new ApiError(400, "Please enter password")
+    }
     
     const user = await User.findOne({
         email: email
@@ -125,7 +129,6 @@ const loginUser = asyncHandler(async (req, res) =>{
         )
     )
    } catch (error) {
-        console.log(error?.message)
         throw new ApiError(500, error?.message)
    }
 
