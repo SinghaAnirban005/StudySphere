@@ -116,14 +116,16 @@ function Group() {
             const addMem = await axios.post(`http://localhost:8000/api/v1/group/add/${userId.groupId}`, data, {
                 withCredentials: true
             })
+
+            console.log(addMem)
         
             if(!addMem) {
                 throw new Error("Request failed to add members")
             }
-            console.log(addMem)
             
             navigate('/group')
         } catch (error) {
+            alert('Cannot add User to this group')
             console.log(error.message)
             throw error
         }

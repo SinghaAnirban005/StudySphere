@@ -188,7 +188,19 @@ const createGroup = asyncHandler(async (req, res) => {
       });
 
       if(!existingUser) {
-        throw new ApiError(400, "User already exists !!")
+        throw new ApiError(400, "User does not exist !!")
+      }
+
+      const group = await Group.findById(groupId)
+
+      if(!group) {
+        throw new ApiError(400, "Invalid Group")
+      }
+
+      const isAlreadyMember = group.members.includes(existingUser._id)
+
+      if(isAlreadyMember) {
+          throw new ApiError(400, "User is already a member")
       }
 
       const updatedGroup = await Group.findByIdAndUpdate(
@@ -198,7 +210,6 @@ const createGroup = asyncHandler(async (req, res) => {
               members: existingUser._id
             }
           },
-
           {
             new: true
           }
