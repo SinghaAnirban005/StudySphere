@@ -1,80 +1,72 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import {ApiError} from "../utils/ApiError.js"
+import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { whiteBoard } from "../models/WhiteBoard.model.js";
 
-const getWhiteboardState = asyncHandler(async(req, res) => {
-    try {
-        const { groupId } = req.params
+const getWhiteboardState = asyncHandler(async (req, res) => {
+  const { groupId } = req.params;
 
-        if(!groupId) {
-            throw new ApiError(404, "Group Id not found")
-        }
+  if (!groupId) {
+    throw new ApiError(404, "Group ID is required.");
+  }
 
-        const whiteboard = await whiteBoard.findOne({
-            groupId
-        })
-        
-        if(!whiteBoard) {
-            throw new ApiError(400, "Failed to fetch whiteboard")
-        }
-        
-        const state = whiteboard.whiteboardState
+  try {
+    const whiteboard = await whiteBoard.findOne({ groupId });
 
-        return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                state,
-                "Fetched whiteboard state !!"
-            )
-        )
-    } catch (error) {
-        throw new ApiError(500, "Server Error :: " + error?.message)
+    if (!whiteboard) {
+      throw new ApiError(400, "Whiteboard state not found for the given group ID.");
     }
-})
 
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        whiteboard.whiteboardState,
+        "Whiteboard state fetched successfully!"
+      )
+    );
+  } catch (error) {
+    throw new ApiError(500, "Server Error :: " + error?.message);
+  }
+});
 
-const saveWhiteboardState = asyncHandler(async(req, res) => {
-    try {
-        const { groupId } = req.params;
-        const { whiteboardState } = req.body;
-        
-        let whiteboard = await whiteBoard.findOne({
-            groupId
-        })
+const saveWhiteboardState = asyncHandler(async (req, res) => {
+  const { groupId } = req.params;
+  const { whiteboardState } = req.body;
 
-        if(whiteboard){
-            whiteboard.whiteboardState = whiteboardState;
-            whiteboard.lastModified = Date.now();
-            await whiteboard.save();
-        }
-        else{
-            whiteboard = new whiteBoard({
-                groupId,
-                whiteboardState
-              });
-              await whiteboard.save();
-        }
+  if (!groupId || !whiteboardState) {
+    throw new ApiError(400, "Group ID and whiteboard state are required.");
+  }
 
+  try {
+    let whiteboard = await whiteBoard.findOne({ groupId });
 
-        return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                whiteboard,
-                "Whiteboard saved succesfully !!"
-            )
-        )
-    } catch (error) {
-        throw new ApiError(500, "Server error :: " + error?.message)
+    if (whiteboard) {
+    
+      whiteboard.whiteboardState = whiteboardState;
+      whiteboard.lastModified = Date.now();
+    } else {
+      
+      whiteboard = new whiteBoard({
+        groupId,
+        whiteboardState,
+      });
     }
-})
 
+    await whiteboard.save();
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        whiteboard,
+        "Whiteboard state saved successfully!"
+      )
+    );
+  } catch (error) {
+    throw new ApiError(500, "Server Error :: " + error?.message);
+  }
+});
 
 export {
-    getWhiteboardState,
-    saveWhiteboardState
-}
+  getWhiteboardState,
+  saveWhiteboardState,
+};
