@@ -8,7 +8,6 @@ import Message from "./models/Message.model.js";
 
 const app = express();
 
-// CORS configuration
 const corsOptions = {
     origin: 'http://localhost:5173',  
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -38,7 +37,6 @@ app.use('/api/v1/resource', resourceRouter);
 app.use('/api/v1/chat', chatRouter);
 app.use('/api/v1/whiteboard', whiteboardRouter)
 
-// Create the HTTP server and integrate Socket.io
 const server = createServer(app);
 
 // Initialize Socket.io instance
@@ -73,7 +71,6 @@ io.on("connection", (socket) => {
   socket.on("send_message", async (data) => {
     const { groupId, message, userId, username } = data;
 
-    // Save the message to MongoDB
     const newMessage = new Message({
       groupId,
       userId,
@@ -83,14 +80,14 @@ io.on("connection", (socket) => {
     });
 
     try {
-      await newMessage.save();  // Save the message to the database
+      await newMessage.save();  
 
       // Emit the message to other users in the group
       io.to(groupId).emit("receive_message", {
         message,
         userId,
         username,
-        timestamp: newMessage.timestamp  // Use the saved timestamp
+        timestamp: newMessage.timestamp 
       });
 
       console.log(`Message sent to group ${groupId} by user ${username}: ${message}`);
@@ -111,5 +108,5 @@ io.on("connection", (socket) => {
   });
 });
 
-// Export both the Express app and the server (for Socket.io)
+
 export { app, server };

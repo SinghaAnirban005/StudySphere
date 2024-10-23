@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom"
-// import axios from "axios"
 
 function GroupCard2({name, description, leader, id }) {
 
