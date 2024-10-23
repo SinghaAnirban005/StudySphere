@@ -9,7 +9,7 @@ import Message from "./models/Message.model.js";
 const app = express();
 
 const corsOptions = {
-    origin: 'https://study-sphere-khaki.vercel.app',  
+    origin: 'https://study-sphere-theta.vercel.app',  
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],  
     credentials: true  
@@ -42,7 +42,7 @@ const server = createServer(app);
 // Initialize Socket.io instance
 const io = new Server(server, {
   cors: {
-    origin: "https://study-sphere-khaki.vercel.app",
+    origin: "https://study-sphere-theta.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
   }
