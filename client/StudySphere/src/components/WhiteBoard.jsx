@@ -5,6 +5,8 @@ import { Comment } from "react-loader-spinner"
 import { jsPDF } from "jspdf"
 import axios from 'axios';
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const Whiteboard = () => {
     const [whiteboardState, setWhiteboardState] = useState(null);
     const canvasRef = useRef(null);
@@ -16,10 +18,10 @@ const Whiteboard = () => {
     
     // Function to save the current whiteboard state
     const saveWhiteboard = async () => {
-        const dataURL = canvasRef.current.getSaveData(); // Save canvas data
+        const dataURL = canvasRef.current.getSaveData(); 
         
         try {
-            await axios.post(`http://localhost:8000/api/v1/whiteboard/saveW/${groupId}`, 
+            await axios.post(`${apiUrl}/api/v1/whiteboard/saveW/${groupId}`, 
                 { 
                     whiteboardState: dataURL 
                 }
@@ -34,7 +36,7 @@ const Whiteboard = () => {
     // Function to load the whiteboard state
     const loadWhiteboard = async () => {
         try {
-            const response = await axios.get(`http://localhost:8000/api/v1/whiteboard/getW/${groupId}`);
+            const response = await axios.get(`${apiUrl}/api/v1/whiteboard/getW/${groupId}`);
             const state = response.data.data;
        
             if (state) {

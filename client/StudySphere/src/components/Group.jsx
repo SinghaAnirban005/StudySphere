@@ -12,9 +12,10 @@ import ChatComponent from "./Chat.jsx";
 import { delGroup } from "../store/Slice.js";
 import { Comment } from "react-loader-spinner";
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 function Group() {
 
-    const [groupData, setGroupData] = useState({})
     const [mem, setMem] = useState(true)
     const [res, setRes] = useState(false)
     const { register, handleSubmit } = useForm()
@@ -55,9 +56,9 @@ function Group() {
             try {
                 const newId = userId.groupId;
 
-                const memberData = await axios.get(`http://localhost:8000/api/v1/group/c/${newId}`, { withCredentials: true });
-                const resourceData = await axios.get(`http://localhost:8000/api/v1/resource/getResource/${newId}`, { withCredentials: true });
-                const userData = await axios.get('http://localhost:8000/api/v1/users/getUser', { withCredentials: true });
+                const memberData = await axios.get(`${apiUrl}/api/v1/group/c/${newId}`, { withCredentials: true });
+                const resourceData = await axios.get(`${apiUrl}/api/v1/resource/getResource/${newId}`, { withCredentials: true });
+                const userData = await axios.get(`${apiUrl}/api/v1/users/getUser`, { withCredentials: true });
 
                 if (!memberData || !userData) throw new Error('Failed to fetch data');
 
@@ -91,7 +92,7 @@ function Group() {
         try {
             const groupId = userId.groupId
             
-            const group = await axios.delete(`http://localhost:8000/api/v1/group/delete/${groupId}`, {
+            const group = await axios.delete(`${apiUrl}/api/v1/group/delete/${groupId}`, {
                 withCredentials: true
             })
 
@@ -113,7 +114,7 @@ function Group() {
 
     const addMember = async(data) => {
         try {
-            const addMem = await axios.post(`http://localhost:8000/api/v1/group/add/${userId.groupId}`, data, {
+            const addMem = await axios.post(`${apiUrl}/api/v1/group/add/${userId.groupId}`, data, {
                 withCredentials: true
             })
 
@@ -133,7 +134,7 @@ function Group() {
 
     const leaveGroup = async() => {
         try {
-            const group = await axios.put(`http://localhost:8000/api/v1/group/leave/${userId.groupId}`, {}, {
+            const group = await axios.put(`${apiUrl}/api/v1/group/leave/${userId.groupId}`, {}, {
                 withCredentials: true
             })
 
@@ -160,7 +161,7 @@ function Group() {
             formData.append('description', data.description)
 
 
-            const liveResource = await axios.post(`http://localhost:8000/api/v1/resource/addResource/${userId.groupId}`, formData, {
+            const liveResource = await axios.post(`${apiUrl}/api/v1/resource/addResource/${userId.groupId}`, formData, {
                 withCredentials: true
             })
 

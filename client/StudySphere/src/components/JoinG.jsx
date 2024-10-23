@@ -5,6 +5,8 @@ import GroupCard2 from "./GroupCard2.jsx";
 import { Comment } from "react-loader-spinner";
 import axios from "axios";
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 function JoinG() {
 
     const [loading, setLoading] = useState(false)
@@ -13,7 +15,7 @@ function JoinG() {
 
     const handleSearch = async() => {
       try {
-          const data = await axios.get('http://localhost:8000/api/v1/group/filterGroups',{
+          const data = await axios.get(`${apiUrl}/api/v1/group/filterGroups`,{
             params: {
               name: item || ''
             },
@@ -37,7 +39,7 @@ function JoinG() {
       setLoading(true)
         const fetchGroups = async () => {
           try {
-            const item = await axios.get('http://localhost:8000/api/v1/group/getG');
+            const item = await axios.get(`${apiUrl}/api/v1/group/getG`);
       
             if (!item) {
               throw new Error("Failed to fetch groups");

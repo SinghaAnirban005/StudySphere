@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { updateUser } from '../store/Slice.js';
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 function Profile() {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
@@ -24,7 +26,7 @@ function Profile() {
         console.log(data)
         try {
             const response = await axios.put(
-                'http://localhost:8000/api/v1/users/update-profile',
+                `${apiUrl}/api/v1/users/update-profile`,
                 null,
                 {
                     params: data,
@@ -80,23 +82,6 @@ function Profile() {
                         />
                     </div>
 
-                    {/* Profile Picture */}
-                    {/* <div>
-                        <label className="block text-gray-700 font-semibold mb-2">Profile Picture:</label>
-                        <input
-                            type="file"
-                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                            {
-                                ...register(
-                                    'profilePic',{
-                                        required: true
-                                    }
-                                )
-                            }
-                        />
-                    </div> */}
-
-                    {/* Submit Button */}
                     <div className="flex justify-between items-center mt-6">
                         <button
                             type="submit"

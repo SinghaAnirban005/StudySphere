@@ -8,6 +8,8 @@ import GroupCard from "./GroupCard.jsx";
 import { groups } from "../store/Slice.js";
 import { Comment } from "react-loader-spinner"
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 function MyGroups() {
 
     const [isOpen, setIsOpen] = useState(false)
@@ -28,7 +30,7 @@ function MyGroups() {
 
     const createGroup = async(data) => {
         try {   
-            const group = await axios.post('http://localhost:8000/api/v1/group/createGroup', data, {
+            const group = await axios.post(`${apiUrl}/api/v1/group/createGroup`, data, {
                 withCredentials: true
             })
             
@@ -51,7 +53,7 @@ function MyGroups() {
         try {
           
           const cadet = await axios.get(
-            "http://localhost:8000/api/v1/users/getGroups",
+            `${apiUrl}/api/v1/users/getGroups`,
             { withCredentials: true }
           );        
 

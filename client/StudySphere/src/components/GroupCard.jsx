@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { useSelector } from "react-redux";
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 function GroupCard({name, description, _id, leader }) {
 
     const navigate = useNavigate()
@@ -15,7 +17,7 @@ function GroupCard({name, description, _id, leader }) {
 
     const handleDeletion = async() => {
         try {
-            const groupToBeDeleted = await axios.delete(`http://localhost:8000/api/v1/group/delete/${_id}`, {
+            const groupToBeDeleted = await axios.delete(`${apiUrl}/api/v1/group/delete/${_id}`, {
                withCredentials: true 
             })
 

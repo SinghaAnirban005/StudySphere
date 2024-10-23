@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../store/Slice.js";
 import { useDispatch } from "react-redux";
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 function LogoutBtn() {
     const navigate = useNavigate();
     const dispatch = useDispatch(); 
@@ -11,7 +13,7 @@ function LogoutBtn() {
     const handleLogout = async () => {
     
         try {
-            await axios.post('http://localhost:8000/api/v1/users/signOut', {}, { withCredentials: true });
+            await axios.post(`${apiUrl}/api/v1/users/signOut`, {}, { withCredentials: true });
             dispatch(logout());
             navigate('/');
         } catch (error) {

@@ -8,6 +8,8 @@ import { groups } from "../store/Slice.js";
 function Access() {
 
     
+const apiUrl = import.meta.env.VITE_API_URL
+
     const {groupId} = useParams()
     const [member, setMember] = useState(false)
     const navigate = useNavigate()
@@ -20,7 +22,7 @@ function Access() {
                 email : userData.email
             }
 
-            const signUp = await axios.post(`http://localhost:8000/api/v1/group/add/${groupId}`, data, {
+            const signUp = await axios.post(`${apiUrl}/api/v1/group/add/${groupId}`, data, {
                 withCredentials: true
             })
 

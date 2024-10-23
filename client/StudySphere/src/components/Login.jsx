@@ -8,6 +8,8 @@ import { login } from "../store/Slice.js";
 import { Comment } from "react-loader-spinner"
 import axios from "axios";
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 function Login() {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -20,7 +22,7 @@ function Login() {
 
         try {
             const loggedIn = await axios.post(
-                "http://localhost:8000/api/v1/users/signIn",
+                `${apiUrl}/api/v1/users/signIn`,
                 data,
                 {
                     withCredentials: true,
@@ -33,7 +35,7 @@ function Login() {
             }
 
             const userData = await axios.get(
-                "http://localhost:8000/api/v1/users/getUser",
+                `${apiUrl}/api/v1/users/getUser`,
                 { withCredentials: true }
             );
 

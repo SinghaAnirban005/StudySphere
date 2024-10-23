@@ -3,7 +3,9 @@ import { io } from 'socket.io-client';
 import moment from 'moment'; // To handle timestamp formatting
 import { Comment } from "react-loader-spinner"
 
-const socket = io('http://localhost:8000'); // Connect to the server
+const apiUrl = import.meta.env.VITE_API_URL
+
+const socket = io(apiUrl); // Connect to the server
 
 function ChatComponent({ groupId, userId, username }) {
   const [message, setMessage] = useState('');

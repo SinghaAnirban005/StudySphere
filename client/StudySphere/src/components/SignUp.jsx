@@ -1,12 +1,14 @@
 import React from "react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { login } from "../store/Slice.js";
 import axios from "axios";
 import { Comment } from "react-loader-spinner"
-import Input from "./Input.jsx";
+import Input from "./Input.jsx"
+
+const apiUrl = import.meta.env.VITE_API_URL
 
 function SignUp() {
     const [error, setError] = useState('');
@@ -25,7 +27,7 @@ function SignUp() {
             formData.append('password', data.password);
             formData.append('profilePic', data.profilePic[0]);
 
-            const registration = await axios.post("http://localhost:8000/api/v1/users/register", formData, {
+            const registration = await axios.post(`${apiUrl}/api/v1/users/register`, formData, {
                 withCredentials: true,
             });
 
@@ -39,11 +41,11 @@ function SignUp() {
                 password: data.password,
             };
 
-            await axios.post('http://localhost:8000/api/v1/users/signIn', newData, {
+            await axios.post(`${apiUrl}/api/v1/users/signIn`, newData, {
                 withCredentials: true,
             });
 
-            const userData = await axios.get('http://localhost:8000/api/v1/users/getUser', {
+            const userData = await axios.get(`${apiUrl}/api/v1/users/getUser`, {
                 withCredentials: true,
             });
 

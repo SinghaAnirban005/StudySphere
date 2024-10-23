@@ -2,6 +2,9 @@ import React from "react";
 import axios from "axios"
 import { useNavigate } from "react-router-dom";
 
+
+const apiUrl = import.meta.env.VITE_API_URL
+
 function Resources({ title, description, url, _id, groupId }) {
 
     const navigate = useNavigate()
@@ -12,7 +15,7 @@ function Resources({ title, description, url, _id, groupId }) {
                 resourceId: _id
             }
 
-            const resourceToBeDeleted = await axios.delete(`http://localhost:8000/api/v1/resource/deleteResource/${groupId}`, {
+            const resourceToBeDeleted = await axios.delete(`${apiUrl}/v1/resource/deleteResource/${groupId}`, {
                 data,
                 withCredentials: true
             })
