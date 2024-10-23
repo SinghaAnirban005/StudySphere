@@ -224,118 +224,6 @@ const getCurrentUser = asyncHandler(async(req, res) => {
     }
 })
 
-// const updatefullName = asyncHandler(async(req, res) => {
-//     try {
-//         const userId = req.user._id
-
-//         if(!userId) {
-//             throw new ApiError(400, "Invalid User")
-//         }
-    
-//         const user = await User.findByIdAndUpdate(
-//             userId,
-//             {
-//                 fullName: fullName
-//             },
-//             {
-//                 new: true
-//             }
-//         )
-    
-//         if(!user) {
-//             throw new ApiError(400, "User does not exist !!")
-//         }
-    
-//         return res
-//         .status(200)
-//         .json(
-//             new ApiResponse(
-//                 200,
-//                 user,
-//                 "Succesfully updated fullName"
-//             )
-//         )
-//     } catch (error) {
-//         throw new ApiError(500, error?.message)
-//     }
-// })
-
-// const updatePassword =asyncHandler(async (req, res) => {
-//     const userId  = req.user._id;
-//     const { oldPassword, newPassword } = req.body;
-  
-//     try {
-//       if (!oldPassword || !newPassword) {
-//         throw new ApiError(400, "Old and new passwords are required.")
-//       }
-  
-//       const user = await User.findById(userId);
-//       if (!user) {
-//         throw new ApiError(400, "User not found")
-//       }
-  
-
-//       const isMatch = await bcrypt.compare(oldPassword, user.password);
-//       if (!isMatch) {
-//         return res.status(400).json({ message: 'Incorrect old password.' });
-//       }
-  
-   
-//       const salt = await bcrypt.genSalt(10);
-//       const hashedPassword = await bcrypt.hash(newPassword, salt);
-  
-     
-//       user.password = hashedPassword;
-//       await user.save();
-  
-//      return res
-//      .status(200)
-//      .json(
-//         new ApiResponse(
-//             200,
-//             {},
-//             "Password updated Succesfully"
-//         )
-//      )
-//     } catch (error) {
-//         throw new ApiError(500, error?.message)
-//     }
-// })
-
-
-// const updateProfilePicture = asyncHandler(async (req, res) => {
-//     const userId  = req.user._id; 
-//     const { profilePictureUrl } = req.body;
-  
-//     try {
-//       if (!profilePictureUrl) {
-//         throw new ApiError(400, "Profile picture URL is required.")
-//       }
-  
-//       const updatedUser = await User.findByIdAndUpdate(
-//         userId,
-//         { profilePic: profilePictureUrl },
-//         { new: true }
-//       );
-  
-//       if (!updatedUser) {
-//         throw new ApiError(400, "User not found")
-//       }
-  
-//       return res
-//       .status(200)
-//       .json(
-//         new ApiResponse(
-//             200, 
-//             updatedUser,
-//             "Profile picture updated succesfully"
-//         )
-//       )
-//     } catch (error) {
-//         throw new ApiError(500, error?.message)
-//     }
-//   }
-// )
 
 const getGroups = asyncHandler(async(req, res) => {
     try {
@@ -447,9 +335,6 @@ export {
     refreshAccessToken,
     loginUser,
     getCurrentUser,
-    // updatefullName,
-    // updatePassword,
-    // updateProfilePicture,
     getGroups,
     getLeaderInfo,
     updateProfile
