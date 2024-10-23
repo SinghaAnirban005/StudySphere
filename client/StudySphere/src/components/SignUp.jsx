@@ -8,6 +8,7 @@ import axios from "axios";
 import { Comment } from "react-loader-spinner"
 import Input from "./Input.jsx"
 
+
 const apiUrl = import.meta.env.VITE_API_URL
 
 function SignUp() {
