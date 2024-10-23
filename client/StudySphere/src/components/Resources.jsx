@@ -56,6 +56,7 @@ function Resources({ title, description, url, _id, groupId }) {
                 target="_blank"
                 // rel="noopener noreferrer"
                 className="text-blue-600 hover:underline text-sm"
+                onClick={() => console.log(url)}
             >
                 Visit Resource
             </a>
