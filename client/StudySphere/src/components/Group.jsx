@@ -134,6 +134,7 @@ function Group() {
 
     const leaveGroup = async() => {
         try {
+            setLoading(true)
             const group = await axios.put(`${apiUrl}/api/v1/group/leave/${userId.groupId}`, {}, {
                 withCredentials: true
             })
@@ -149,6 +150,9 @@ function Group() {
         } catch (error) {
             console.log(error)
             throw new Error(error?.message)
+        }
+        finally{
+            setLoading(false)
         }
     }
 

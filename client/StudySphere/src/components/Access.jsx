@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import axios from "axios"
 import { groups } from "../store/Slice.js";
+import { Comment } from "react-loader-spinner";
 
 function Access() {
   
@@ -12,10 +13,12 @@ const apiUrl = import.meta.env.VITE_API_URL
     const {groupId} = useParams()
     const [member, setMember] = useState(false)
     const navigate = useNavigate()
+    const [ loading, setLoading ] = useState(false)
     const dispatch = useDispatch()
     
     const joinGroup = async() => {
         try {
+          setLoading(true)
             const data = {
                 username : userData.username,
                 email : userData.email
@@ -37,6 +40,9 @@ const apiUrl = import.meta.env.VITE_API_URL
             console.log(error)
             throw new Error("Something went wrong" + error?.message)
         }
+        finally{
+          setLoading(false)
+        }
     }
 
 
@@ -57,8 +63,18 @@ const apiUrl = import.meta.env.VITE_API_URL
     }, [])
 
     return (
-        
-            !member ? (
+        loading ? (
+          <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+                    <Comment
+                     visible={true} 
+                     height="80" 
+                     width="80" 
+                     color="yellow" 
+                     ariaLabel="comment-loading" 
+                    />
+            </div>
+        ) : (
+          !member ? (
             <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
             <div className="max-w-md w-full bg-white rounded-lg shadow-xl shadow-black p-6">
               <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">Join the Study Group</h2>
@@ -104,7 +120,7 @@ const apiUrl = import.meta.env.VITE_API_URL
           </div>
         </div>
         
-        
+        )
       
     )
 }
