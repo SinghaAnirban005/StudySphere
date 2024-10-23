@@ -22,7 +22,6 @@ function ChatComponent({ groupId, userId, username }) {
       });
   
       socket.on('receive_message', (data) => {
-        console.log(data)
         setMessages((prev) => [...prev, data]);
       });
   
