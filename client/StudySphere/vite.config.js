@@ -7,6 +7,7 @@ export default defineConfig({
     rollupOptions: {
       external: ['react-dom/client']
     },
+    outDir: 'dist',
   },
   plugins: [react()],
 })
