@@ -10,6 +10,7 @@ function Resources({ title, description, url, _id, groupId }) {
     const navigate = useNavigate()
 
     const handleDeletion = async() => {
+        console.log(url)
         try {
             const data = {
                 resourceId: _id
