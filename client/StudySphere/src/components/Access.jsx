@@ -6,7 +6,7 @@ import axios from "axios"
 import { groups } from "../store/Slice.js";
 
 function Access() {
-   
+  
 const apiUrl = import.meta.env.VITE_API_URL
 
     const {groupId} = useParams()
