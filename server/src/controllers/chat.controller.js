@@ -1,6 +1,5 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js"
-import { ApiResponse } from "../utils/ApiResponse.js";
 import Message from "../models/Message.model.js";
 
 const getMessages = asyncHandler(async(req, res) => {

@@ -15,7 +15,7 @@ function Resources({ title, description, url, _id, groupId }) {
                 resourceId: _id
             }
 
-            const resourceToBeDeleted = await axios.delete(`${apiUrl}/v1/resource/deleteResource/${groupId}`, {
+            const resourceToBeDeleted = await axios.delete(`${apiUrl}/api/v1/resource/deleteResource/${groupId}`, {
                 data,
                 withCredentials: true
             })
