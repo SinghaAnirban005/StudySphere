@@ -78,8 +78,8 @@ StudySphere/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/studysphere.git
-   cd studysphere
+   git clone https://github.com/yourusername/StudySphere.git
+   cd StudySphere
    ```
 
 2. **Start with Docker Compose**
@@ -100,7 +100,7 @@ StudySphere/
    npm install
 
    # Install frontend dependencies
-   cd ../client
+   cd ../client/StudySphere
    npm install
    ```
 
@@ -118,7 +118,7 @@ StudySphere/
    npm run dev
 
    # Terminal 2: Start frontend
-   cd client
+   cd client/StudySphere
    npm run dev
    ```
 
