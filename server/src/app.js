@@ -24,7 +24,6 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-// Routers
 import userRouter from "./routes/user.routes.js";
 import groupRouter from "./routes/group.routes.js";
 import resourceRouter from "./routes/resource.routes.js";
@@ -39,7 +38,6 @@ app.use('/api/v1/whiteboard', whiteboardRouter)
 
 const server = createServer(app);
 
-// Initialize Socket.io instance
 const io = new Server(server, {
   cors: {
     origin: "https://study-sphere-theta.vercel.app",
@@ -48,26 +46,22 @@ const io = new Server(server, {
   }
 });
 
-// Handle Socket.io connections for group chats
+
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  // Join group chat room
   socket.on("join_group", async (groupId) => {
     socket.join(groupId);
     console.log(`User ${socket.id} joined group: ${groupId}`);
-  
-    // Fetch chat history from the database
+
     try {
       const messages = await Message.find({ groupId }).sort({ timestamp: 1 });
-      // Emit the chat history to the user who just joined
       socket.emit('chat_history', messages);
     } catch (err) {
       console.error('Failed to load chat history:', err);
     }
   });
-
-  // Handle incoming chat messages
+    
   socket.on("send_message", async (data) => {
     const { groupId, message, userId, username } = data;
 
@@ -81,8 +75,7 @@ io.on("connection", (socket) => {
 
     try {
       await newMessage.save();  
-
-      // Emit the message to other users in the group
+        
       io.to(groupId).emit("receive_message", {
         message,
         userId,
@@ -96,13 +89,11 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Handle when a user leaves the group
   socket.on("leave_group", (groupId) => {
     socket.leave(groupId);
     console.log(`User ${socket.id} left group: ${groupId}`);
   });
 
-  // Handle user disconnection
   socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
   });
